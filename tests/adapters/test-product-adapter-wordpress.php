@@ -2,7 +2,6 @@
 
 use Magento_Bridge\Adapters\Product_Adapter_Wordpress;
 use Magento_Bridge\Product\Product;
-use Magento_Bridge\Product\Product_Fetch;
 
 /**
  * Cache Test
