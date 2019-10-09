@@ -27,6 +27,10 @@ function _manually_load_plugin() {
 
 	// Run activation
 	activate_magento_bridge();
+
+	//Manually Insert Options
+	update_option( 'magento_api_auth', '1234567890' );
+	update_option( 'magento_api_url', 'https://127.0.0.1' );
 }
 
 tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );

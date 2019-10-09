@@ -39,6 +39,15 @@ class Product {
 	/** @var array */
 	public $additional_photos = [];
 
+	/** @var array of Products */
+	public $children = [];
+
+	/** @var array  */
+	public $configurable_attributes = [];
+
+	/** @var array */
+	public $attributes = [];
+
 	/** @var int */
 	public $cache_time = 0;
 }

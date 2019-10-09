@@ -29,7 +29,7 @@
  */
 class Magento_Bridge {
 
-	const BRIDGE_TABLE = 'magento_bridge_products';
+	const BRIDGE_TABLE = 'magento_bridge';
 
 	/**
 	 * The loader that's responsible for maintaining and registering all hooks that power
@@ -37,7 +37,7 @@ class Magento_Bridge {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      Magento_Bridge_Loader    $loader    Maintains and registers all hooks for the plugin.
+	 * @var      Magento_Bridge_Loader $loader Maintains and registers all hooks for the plugin.
 	 */
 	protected $loader;
 
@@ -46,7 +46,7 @@ class Magento_Bridge {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      string    $Magento_Bridge    The string used to uniquely identify this plugin.
+	 * @var      string $Magento_Bridge The string used to uniquely identify this plugin.
 	 */
 	protected $Magento_Bridge;
 
@@ -55,7 +55,7 @@ class Magento_Bridge {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      string    $version    The current version of the plugin.
+	 * @var      string $version The current version of the plugin.
 	 */
 	protected $version;
 
@@ -116,7 +116,7 @@ class Magento_Bridge {
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
-		//require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-magento-bridge-admin.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-magento-bridge-admin.php';
 
 		$this->loader = new Magento_Bridge_Loader();
 
@@ -148,10 +148,12 @@ class Magento_Bridge {
 	 */
 	private function define_admin_hooks() {
 
-		//$plugin_admin = new Magento_Bridge_Admin( $this->get_Magento_Bridge(), $this->get_version() );
+		$plugin_admin = new Magento_Bridge_Admin( $this->get_Magento_Bridge(), $this->get_version() );
 
 		//$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		//$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'register_settings' );
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'register_option_page' );
 
 	}
 
@@ -184,8 +186,8 @@ class Magento_Bridge {
 	 * The name of the plugin used to uniquely identify it within the context of
 	 * WordPress and to define internationalization functionality.
 	 *
-	 * @since     1.0.0
 	 * @return    string    The name of the plugin.
+	 * @since     1.0.0
 	 */
 	public function get_Magento_Bridge() {
 		return $this->Magento_Bridge;
@@ -194,8 +196,8 @@ class Magento_Bridge {
 	/**
 	 * The reference to the class that orchestrates the hooks with the plugin.
 	 *
-	 * @since     1.0.0
 	 * @return    Magento_Bridge_Loader    Orchestrates the hooks of the plugin.
+	 * @since     1.0.0
 	 */
 	public function get_loader() {
 		return $this->loader;
@@ -204,18 +206,10 @@ class Magento_Bridge {
 	/**
 	 * Retrieve the version number of the plugin.
 	 *
-	 * @since     1.0.0
 	 * @return    string    The version number of the plugin.
+	 * @since     1.0.0
 	 */
 	public function get_version() {
 		return $this->version;
 	}
-
-	/**
-	 * @param $sku
-	 */
-	public function get_product_data( $sku )  {
-
-	}
-
 }
