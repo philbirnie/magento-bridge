@@ -13,6 +13,8 @@
  * @subpackage Magento_Bridge/includes
  */
 
+use Magento_Bridge\Processor\Product_Update;
+
 /**
  * The core plugin class.
  *
@@ -80,6 +82,7 @@ class Magento_Bridge {
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
+		$this->define_cron_hooks();
 	}
 
 	/**
@@ -225,16 +228,23 @@ class Magento_Bridge {
 		global $wpdb;
 
 		switch ( $key ) {
-			case 'attribute_label';
-			case 'child_attributes';
-			case 'configurable_attributes';
-			case 'configurable_children';
-			case 'related_products';
-			case 'products';
+			case 'attribute_label':
+			case 'child_attributes':
+			case 'configurable_attributes':
+			case 'configurable_children':
+			case 'related_products':
+			case 'products':
 				return $wpdb->prefix . self::BRIDGE_TABLE . sprintf( '_%s', $key );
 			default:
 				throw new Exception( sprintf( '%s is not a valid table name', $key ) );
 		}
+	}
+
+	/**
+	 * Sets up Cron Hooks
+	 */
+	public function define_cron_hooks() {
+		add_action( 'magento_bridge_product_update', [ Product_Update::class, 'run' ] );
 	}
 
 }

@@ -10,6 +10,8 @@
  * @subpackage Magento_Bridge/includes
  */
 
+use Magento_Bridge\Processor\Product_Update;
+
 /**
  * Fired during plugin deactivation.
  *
@@ -34,6 +36,6 @@ class Magento_Bridge_Deactivator {
 	}
 
 	public static function deactivate_cron() {
-		wp_clear_scheduled_hook( '\Magento_Bridge\Processor\Product_Update\Product_Update::run' );
+		wp_clear_scheduled_hook( 'magento_bridge_product_update' );
 	}
 }

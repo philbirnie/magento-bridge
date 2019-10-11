@@ -37,8 +37,8 @@ class Magento_Bridge_Activator {
 	}
 
 	protected static function schedule_cron() {
-		if ( ! wp_next_scheduled( '\Magento_Bridge\Processor\Product_Update\Product_Update::run' ) ) {
-			wp_schedule_event( time(), 'hourly', '\Magento_Bridge\Processor\Product_Update\Product_Update::run' );
+		if ( ! wp_next_scheduled( 'magento_bridge_product_update' ) ) {
+			wp_schedule_event( time(), 'hourly', 'magento_bridge_product_update' );
 		}
 	}
 
