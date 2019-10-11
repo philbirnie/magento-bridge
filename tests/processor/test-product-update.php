@@ -246,6 +246,40 @@ class ProductUpdateTest extends WP_UnitTestCase {
 		$this->assertCount( 3, $related_products );
 	}
 
+	public function test_cached_products_do_not_update_for_related() {
+		global $wpdb;
+
+		$products = Magento_Bridge::get_table_name( 'products' );
+
+		$cache_time = time() -10;
+
+		$wpdb->insert(
+			$products,
+			[
+				'sku' => 'lighthound',
+				'mage_id' => 58,
+				'price' => 5,
+				'type' => 'configurable',
+				'cache_time' => $cache_time
+			]
+		);
+
+		Product_Update::$connectors['simple'] = $this->configurable_with_related_connector;
+		Product_Update::update_product( 'tracer360' );
+
+		$lighthound = $wpdb->get_row( "SELECT * From ${products} WHERE sku = 'lighthound'" );
+
+		$this->assertNotNull( $lighthound );
+		$this->assertEquals( 58, $lighthound->mage_id );
+		$this->assertEquals( $cache_time, $lighthound->cache_time );
+
+		$related_products_table = Magento_Bridge::get_table_name( 'related_products' );
+
+		$related_products = $wpdb->get_results( "SELECT * FROM ${related_products_table} WHERE parent_id = 53 AND related_id = 58" );
+
+		$this->assertCount( 1, $related_products );
+	}
+
 	protected function insert_products() {
 
 		global $wpdb;

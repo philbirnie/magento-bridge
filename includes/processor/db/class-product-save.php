@@ -21,6 +21,7 @@ class Product_Save {
 
 	public function __construct( $result, $ignore_if_cache_is_okay = false ) {
 		$this->result = is_string( $result ) ? json_decode( $result ) : $result;
+		$this->ignore_if_cache_is_okay = $ignore_if_cache_is_okay;
 	}
 
 	public function save() {
