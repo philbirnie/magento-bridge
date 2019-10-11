@@ -43,8 +43,25 @@ class Product_Update {
 		self::$connectors[ $connector ] = $connector_instance;
 	}
 
+	public static function get_new_product_skus() {
+		global $wpdb;
+
+		$table = \Magento_Bridge::get_table_name( 'products' );
+
+		$all_products = self::get_all_product_skus();
+
+		$result = $wpdb->get_col(
+			"SELECT sku
+			FROM  ${table}"
+		);
+
+		return array_diff($all_products, $result);
+	}
+
 	public static function get_expired_products() {
 		global $wpdb;
+
+		$table = \Magento_Bridge::get_table_name( 'products' );
 
 		$cache_threshold = time() - Product_Adapter_Wordpress::CACHE_AGE;
 
@@ -53,8 +70,6 @@ class Product_Update {
 		if ( ! $skus ) {
 			return [];
 		}
-
-		$table = \Magento_Bridge::get_table_name( 'products' );
 
 		$skus_string = "'" . implode( "','", $skus ) . "'";
 

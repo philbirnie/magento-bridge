@@ -89,7 +89,7 @@ class Magento_Bridge_Activator {
   attribute_id smallint(4) UNSIGNED NOT NULL,
   attribute_label text,
   PRIMARY KEY  (id),
-  KEY attribute_id_key (attribute_id)
+  UNIQUE KEY product_att_key (product_id,attribute_id)
 ) $charset_collate;";
 
 

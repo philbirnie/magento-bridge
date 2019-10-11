@@ -74,7 +74,11 @@ abstract class Connector_Magento_API_Abstract implements Connector_Interface {
 			]
 		);
 
-		return $this->response_post_process( $response );
+		if ( 200 != $response['response']['code'] ?? 0 ) {
+			throw new \Exception( sprintf( 'Magento API Request Failure. %d, %s', $response['response']['code'] ?? 0, static::class ) );
+		}
+
+		return $this->response_post_process( $response['body'] ?? '' );
 	}
 
 	/**

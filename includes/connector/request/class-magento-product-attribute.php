@@ -13,7 +13,7 @@ use Magento_Bridge\Connector\Connector_Magento_API_Abstract;
 
 class Magento_Product_Attribute extends Connector_Magento_API_Abstract {
 
-	protected $request = '/products/attributes/%d:';
+	protected $request = '/products/attributes/%d';
 
 	public function __construct( $attribute_id ) {
 		$this->set_request( $this->request, $attribute_id );

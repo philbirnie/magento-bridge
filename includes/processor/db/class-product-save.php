@@ -148,7 +148,7 @@ class Product_Save {
 	 */
 	protected function get_format(): array {
 		return [
-			'%s', '%d', '%s', '%f', '%f', '%f', '%s', '%s', '%d'
+			'%s', '%d', '%s', '%f', '%f', '%s', '%s', '%s', '%d'
 		];
 	}
 

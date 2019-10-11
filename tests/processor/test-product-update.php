@@ -52,6 +52,15 @@ class ProductUpdateTest extends WP_UnitTestCase {
 			]
 		);
 
+		$custom_product->create(
+			[
+				'post_type'  => 'product',
+				'meta_input' => [
+					'product_sku' => 'new-product'
+				]
+			]
+		);
+
 		$this->configurable_connector = $this->createMock( Magento_Configurable_Children::class );
 		$this->configurable_connector->method( 'send_request' )
 			->willReturn( '[{"id":50,"sku":"tracer360-S","name":"Tracer 360-S","attribute_set_id":9,"price":69.95,"status":1,"visibility":1,"type_id":"simple","created_at":"2019-09-27 14:57:57","updated_at":"2019-10-02 13:51:37","weight":0.9,"product_links":[],"tier_prices":[],"custom_attributes":[{"attribute_code":"required_options","value":"0"},{"attribute_code":"has_options","value":"0"},{"attribute_code":"tax_class_id","value":"2"},{"attribute_code":"category_ids","value":["2","3"]},{"attribute_code":"nox_tracer_size","value":"4"},{"attribute_code":"short_description","value":"<p>The Tracer360 visibility vest keeps you safe and out of harm\'s way while you\'re active by making you highly visible to cars and traffic under any conditions.<\/p>"},{"attribute_code":"image","value":"\/s\/i\/size-chart-01-2x.jpg"},{"attribute_code":"small_image","value":"\/s\/i\/size-chart-01-2x.jpg"},{"attribute_code":"thumbnail","value":"\/s\/i\/size-chart-01-2x.jpg"},{"attribute_code":"swatch_image","value":"\/s\/i\/size-chart-01-2x.jpg"},{"attribute_code":"url_key","value":"tracer-360-s"},{"attribute_code":"msrp_display_actual_price_type","value":"0"}]},{"id":51,"sku":"tracer360-M\/L","name":"Tracer 360-M\/L","attribute_set_id":9,"price":69.95,"status":1,"visibility":1,"type_id":"simple","created_at":"2019-09-27 14:57:57","updated_at":"2019-10-02 13:51:37","weight":0.9063,"product_links":[],"tier_prices":[],"custom_attributes":[{"attribute_code":"required_options","value":"0"},{"attribute_code":"has_options","value":"0"},{"attribute_code":"tax_class_id","value":"2"},{"attribute_code":"category_ids","value":["2","3"]},{"attribute_code":"nox_tracer_size","value":"5"},{"attribute_code":"short_description","value":"<p>The Tracer360 is a high visibility vest that takes you where a reflective vest can\'t. With 360 degrees of full color spectrum illumination paired with 3M reflectivity, the Tracer360 perfect for runners and cyclists.<\/p>"},{"attribute_code":"image","value":"\/s\/i\/size-chart-01-2x.jpg"},{"attribute_code":"small_image","value":"\/s\/i\/size-chart-01-2x.jpg"},{"attribute_code":"thumbnail","value":"\/s\/i\/size-chart-01-2x.jpg"},{"attribute_code":"swatch_image","value":"\/s\/i\/size-chart-01-2x.jpg"},{"attribute_code":"url_key","value":"tracer-360-m-l"},{"attribute_code":"msrp_display_actual_price_type","value":"0"}]},{"id":52,"sku":"tracer360-XL","name":"Tracer 360-XL","attribute_set_id":9,"price":69.95,"status":1,"visibility":1,"type_id":"simple","created_at":"2019-09-27 14:57:57","updated_at":"2019-10-02 13:51:37","weight":0.9313,"product_links":[],"tier_prices":[],"custom_attributes":[{"attribute_code":"required_options","value":"0"},{"attribute_code":"has_options","value":"0"},{"attribute_code":"tax_class_id","value":"2"},{"attribute_code":"category_ids","value":["2","3"]},{"attribute_code":"nox_tracer_size","value":"6"},{"attribute_code":"short_description","value":"<p>The Tracer360 is a high visibility vest that takes you where a reflective vest can\'t. With 360 degrees of full color spectrum illumination paired with 3M reflectivity, the Tracer360 perfect for runners and cyclists.<\/p>"},{"attribute_code":"image","value":"\/s\/i\/size-chart-01-2x.jpg"},{"attribute_code":"small_image","value":"\/s\/i\/size-chart-01-2x.jpg"},{"attribute_code":"thumbnail","value":"\/s\/i\/size-chart-01-2x.jpg"},{"attribute_code":"swatch_image","value":"\/s\/i\/size-chart-01-2x.jpg"},{"attribute_code":"url_key","value":"tracer-360-xl"},{"attribute_code":"msrp_display_actual_price_type","value":"0"}]}]' );
@@ -89,6 +98,13 @@ class ProductUpdateTest extends WP_UnitTestCase {
 		$this->assertContains( '39g', $product_skus );
 		$this->assertContains( 'tracer360', $product_skus );
 		$this->assertNotContains( '39goat', $product_skus );
+	}
+
+	public function testShouldOnlyReturnNewProducts() {
+		$product_skus = Product_Update::get_new_product_skus();
+
+		$this->assertContains( 'new-product', $product_skus );
+		$this->assertNotContains( 'tracer360', $product_skus );
 	}
 
 	public function testShouldReturnOnlyExpiredProducts() {
