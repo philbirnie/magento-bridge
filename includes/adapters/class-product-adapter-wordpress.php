@@ -43,6 +43,24 @@ class Product_Adapter_Wordpress extends Product_Adapter_Abstract implements Prod
 	}
 
 	/**
+	 * Returns an array of related products
+	 *
+	 * @return array
+	 */
+	public function get_related_products(): array {
+
+		$related_skus = $this->get_related_skus();
+
+		$related_products = [];
+
+		foreach ( $related_skus as $related_sku ) {
+			$related_product    = new Product_Adapter_Wordpress( $related_sku );
+			$related_products[] = $related_product->get_product();
+		}
+		return $related_products;
+	}
+
+	/**
 	 * Get Product from Database
 	 *
 	 * @return Product
@@ -204,5 +222,27 @@ class Product_Adapter_Wordpress extends Product_Adapter_Abstract implements Prod
 		}
 
 		return $attributes;
+	}
+
+	protected function get_related_skus(): array {
+		global $wpdb;
+
+		$product = $this->get_product();
+
+		$related_products = \Magento_Bridge::get_table_name( 'related_products' );
+
+		$products = \Magento_Bridge::get_table_name( 'products' );
+
+		return $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT sku
+				FROM ${related_products} as related_products
+				INNER JOIN ${products} as products
+				ON products.mage_id = related_products.related_id
+				 WHERE parent_id = %d",
+				$product->mage_id
+			)
+		);
+
 	}
 }

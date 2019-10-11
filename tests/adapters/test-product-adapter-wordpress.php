@@ -53,7 +53,50 @@ class ProductAdapterWordpressTest extends WP_UnitTestCase {
 			]
 		);
 
+		$wpdb->insert(
+			$wpdb->prefix . Magento_Bridge::BRIDGE_TABLE . '_products',
+			[
+				'sku'           => 'some-related_product',
+				'mage_id'       => 100,
+				'name'          => 'Some Related Product',
+				'price'         => 22.00,
+				'special_price' => 0,
+				'type'          => 'simple',
+				'related'       => '',
+				'cache_time'    => time() - Product_Adapter_Wordpress::CACHE_AGE - 1,
+			]
+		);
+
+		$wpdb->insert(
+			$wpdb->prefix . Magento_Bridge::BRIDGE_TABLE . '_products',
+			[
+				'sku'           => 'some-other-related-product',
+				'mage_id'       => 101,
+				'name'          => 'Some Other Related Product',
+				'price'         => 22.00,
+				'special_price' => 0,
+				'type'          => 'simple',
+				'related'       => '',
+				'cache_time'    => time() - Product_Adapter_Wordpress::CACHE_AGE - 1,
+			]
+		);
+
+		$wpdb->insert(
+			$wpdb->prefix . Magento_Bridge::BRIDGE_TABLE . '_products',
+			[
+				'sku'           => 'some-non-related-product',
+				'mage_id'       => 102,
+				'name'          => 'Some Non Related Product',
+				'price'         => 22.00,
+				'special_price' => 0,
+				'type'          => 'simple',
+				'related'       => '',
+				'cache_time'    => time() - Product_Adapter_Wordpress::CACHE_AGE - 1,
+			]
+		);
+
 		$this->insertConfigurableProduct();
+		$this->insertRelatedProducts();
 
 	}
 
@@ -122,6 +165,16 @@ class ProductAdapterWordpressTest extends WP_UnitTestCase {
 		$this->assertEquals( $medium_product->attributes['tracer_size'], 'M' );
 	}
 
+	public function testShouldReturnCorrectRelatedProducts(  ) {
+		$related_products = $this->adapter->get_related_products();
+
+		$this->assertCount(2, $related_products);
+
+		$related = $related_products[0];
+
+		$this->assertEquals(100, $related->mage_id);
+		$this->assertEquals('Some Related Product', $related->name);
+	}
 
 	protected function insertConfigurableProduct() {
 
@@ -233,6 +286,34 @@ class ProductAdapterWordpressTest extends WP_UnitTestCase {
 				'product_id'     => 6,
 				'attribute_code' => 'tracer_size',
 				'value'          => 101,
+			]
+		);
+	}
+
+	public function insertRelatedProducts() {
+		global $wpdb;
+
+		$wpdb->insert(
+			Magento_Bridge::get_table_name('related_products'),
+			[
+				'parent_id'     => 2,
+				'related_id' => 100,
+			]
+		);
+
+		$wpdb->insert(
+			Magento_Bridge::get_table_name('related_products'),
+			[
+				'parent_id'     => 2,
+				'related_id' => 101,
+			]
+		);
+
+		$wpdb->insert(
+			Magento_Bridge::get_table_name('related_products'),
+			[
+				'parent_id'     => 3,
+				'related_id' => 102,
 			]
 		);
 

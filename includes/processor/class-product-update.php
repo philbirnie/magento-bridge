@@ -27,13 +27,16 @@ class Product_Update {
 
 	public static function run() {
 		$expired_products = self::get_expired_products();
+		$new_products = self::get_new_product_skus();
+
+		$products_to_update = array_merge($expired_products, $new_products);
 
 		/** @var string $expired_product SKU. */
-		foreach ( $expired_products as $expired_product ) {
+		foreach ( $products_to_update as $product ) {
 			try {
-				self::update_product( $expired_product );
+				self::update_product( $product );
 			} catch ( \Exception $e ) {
-				error_log( sprintf( 'Import for %s failed: %s', $expired_product, $e->getMessage() ) );
+				error_log( sprintf( 'Import for %s failed: %s', $product, $e->getMessage() ) );
 			}
 		}
 	}

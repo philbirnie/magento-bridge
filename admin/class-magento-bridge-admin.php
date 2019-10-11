@@ -88,9 +88,7 @@ class Magento_Bridge_Admin {
 						<?php
 						if ( defined( 'MAGENTO_API_URL' ) ) {
 							?>
-							<p>
-							<pre>MAGENTO_API_URL</pre> is set in your
-							<pre>wp-config.php</pre> and therefore, that value will be used.</p>
+							<p><pre>MAGENTO_API_URL</pre> is set in your <pre>wp-config.php</pre> and therefore, that value will be used.</p>
 							<?php
 						} else {
 							?>
@@ -108,10 +106,7 @@ class Magento_Bridge_Admin {
 						<?php
 						if ( defined( 'MAGENTO_API_AUTH' ) ) {
 							?>
-							<p>
-							<pre>MAGENTO_API_AUTH</pre> is set in your
-							<pre>wp-config.php</pre> and therefore, that value will be used.
-							</p>
+							<p><pre>MAGENTO_API_AUTH</pre> is set in your <pre>wp-config.php</pre> and therefore, that value will be used.</p>
 							<?php
 						} else {
 							?>

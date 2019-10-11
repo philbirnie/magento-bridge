@@ -15,8 +15,6 @@ namespace Magento_Bridge\Product;
  */
 class Product_Fetch {
 
-
-
 	/**
 	 * SKU
 	 * @var string
@@ -27,9 +25,6 @@ class Product_Fetch {
 	 * @var null|\Magento_Bridge\Product\Product
 	 */
 	protected $product;
-
-	protected $adapters = [
-	];
 
 	/**
 	 * Product_Fetch constructor.
