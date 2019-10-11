@@ -76,7 +76,6 @@ class Magento_Bridge_Admin {
 	public static function display_settings() {
 		?>
 		<div>
-			<?php screen_icon(); ?>
 			<h2>Magento Connection Settings</h2>
 			<form method="post" action="options.php">
 				<?php settings_fields( 'magento_bridge_options_group' ); ?>
