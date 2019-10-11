@@ -32,6 +32,11 @@ class Configurable_Children_Save {
 			$success      = $product_save->save();
 			if ( $success ) {
 				$children_ids[] = $result->id;
+				$configurable_attributes = $product_save->get_configurable_attribute_as_simple($this->parent_id);
+				foreach($configurable_attributes as $attribute) {
+					$child_attribute_save = new Child_Attribute_Save($attribute, $result);
+					$child_attribute_save->save();
+				}
 			}
 		}
 

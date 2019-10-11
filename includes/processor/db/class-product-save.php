@@ -9,6 +9,7 @@
 
 namespace Magento_Bridge\Processor\Db;
 
+use Magento_Bridge\Adapters\Product_Adapter_Wordpress;
 
 class Product_Save {
 
@@ -16,7 +17,9 @@ class Product_Save {
 
 	protected $result;
 
-	public function __construct( $result ) {
+	protected $ignore_if_cache_is_okay;
+
+	public function __construct( $result, $ignore_if_cache_is_okay = false ) {
 		$this->result = is_string( $result ) ? json_decode( $result ) : $result;
 	}
 
@@ -37,6 +40,12 @@ class Product_Save {
 		if ( $existing_record ) {
 			if ( (int) $existing_record->mage_id === (int) $this->result->id ) {
 				$action = 'REPLACE';
+
+				/** If cache is okay, skip; this is frequently used for related products */
+				if($this->ignore_if_cache_is_okay && $existing_record->cache_time > time() - Product_Adapter_Wordpress::CACHE_AGE) {
+					return true;
+				}
+
 			} else {
 				$this->delete_product();
 			}
@@ -72,6 +81,35 @@ class Product_Save {
 			return [];
 		}
 		return $this->result->extension_attributes->configurable_product_options ?? [];
+	}
+
+	/**
+	 * Returns an array of related items as \stdClass Objects
+	 *
+	 * @return array
+	 */
+	public function get_related_items(): array {
+		return array_filter( $this->result->product_links ?? [], function ( $product_link ) {
+			return 'related' === $product_link->link_type;
+		} );
+	}
+
+	public function get_configurable_attribute_as_simple( $parent_id ) {
+		global $wpdb;
+
+		if ( $this->save_was_configurable() ) {
+			return [];
+		}
+
+		$configurable_attributes_table = \Magento_Bridge::get_table_name( 'configurable_attributes' );
+
+		$configurable_attributes = $wpdb->get_results( $wpdb->prepare( "SELECT DISTINCT attribute_code AS attribute_code FROM ${configurable_attributes_table} WHERE product_id=%d", $parent_id ), ARRAY_N );
+
+		return array_reduce( $configurable_attributes, function ( $carry, $result ) {
+			$carry[] = $result[0];
+			return $carry;
+		}, [] );
+
 	}
 
 	/**

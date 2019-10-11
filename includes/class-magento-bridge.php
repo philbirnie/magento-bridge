@@ -229,6 +229,7 @@ class Magento_Bridge {
 			case 'child_attributes';
 			case 'configurable_attributes';
 			case 'configurable_children';
+			case 'related_products';
 			case 'products';
 				return $wpdb->prefix . self::BRIDGE_TABLE . sprintf( '_%s', $key );
 			default:

@@ -55,8 +55,6 @@ class Magento_Bridge_Activator {
   related text,
   main_photo_url text,
   additional_photos text,
-  children text,
-  options text,
   cache_time int(10) UNSIGNED,
   PRIMARY KEY  (id),
   UNIQUE KEY skey (sku),
@@ -107,6 +105,16 @@ class Magento_Bridge_Activator {
   value tinytext,
   PRIMARY KEY  (id),
   KEY product_id_key (product_id)
+) $charset_collate;";
+
+		$related_products_table = \Magento_Bridge::get_table_name('related_products');
+
+		$sql[] = "CREATE TABLE $related_products_table (
+  id mediumint(9) NOT NULL AUTO_INCREMENT,
+  parent_id smallint(4) UNSIGNED NOT NULL,
+  related_id smallint(4) UNSIGNED NOT NULL,
+  PRIMARY KEY  (id),
+  UNIQUE KEY related_relationship (parent_id,related_id)
 ) $charset_collate;";
 
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );

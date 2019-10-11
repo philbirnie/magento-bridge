@@ -18,6 +18,7 @@ use Magento_Bridge\Processor\Db\Configurable_Attribute_Save;
 use Magento_Bridge\Processor\Db\Configurable_Children_Save;
 use Magento_Bridge\Processor\Db\Product_Attribute_Save;
 use Magento_Bridge\Processor\Db\Product_Save;
+use Magento_Bridge\Processor\Db\Related_Relationship_Save;
 
 class Product_Update {
 
@@ -118,6 +119,11 @@ class Product_Update {
 
 		$product_save = new Product_Save( $product_response );
 		$product_save->save();
+		$saved_product_id = $product_save->get_id();
+
+		if ( ! $saved_product_id ) {
+			throw new \Exception( sprintf( 'Failure saving product %s', $sku ) );
+		}
 
 		if ( $product_save->save_was_configurable() ) {
 			//Save Configurable Attributes
@@ -143,12 +149,27 @@ class Product_Update {
 			}
 
 			/** @var int $parent_id Parent ID. */
-			$parent_id = $product_save->get_id();
-
-			//TODO: Add Attribute
-			$configurable_children_save = new Configurable_Children_Save( $configurable_children_response, $parent_id );
+			$configurable_children_save = new Configurable_Children_Save( $configurable_children_response, $saved_product_id );
 			$configurable_children_save->save();
-
 		}
+
+		// Save Related Products
+		$related_product_items = $product_save->get_related_items();
+		$related_product_ids = [];
+		foreach ( $related_product_items as $related_product_item ) {
+			$related_product_connector = self::$connectors['simple'] ?? new Magento_Simple_Product( $related_product_item->linked_product_sku );
+			$related_product_response  = $related_product_connector->send_request();
+			if ( $related_product_response ) {
+				$related_product_save = new Product_Save( $related_product_response, true );
+				$related_product_save->save();
+				$related_product_id = $related_product_save->get_id();
+				if($related_product_id) {
+					$related_product_ids[] = $related_product_id;
+				}
+			}
+		}
+
+		$related_relationship_save = new Related_Relationship_Save($related_product_ids, $saved_product_id);
+		$related_relationship_save->save();
 	}
 }
