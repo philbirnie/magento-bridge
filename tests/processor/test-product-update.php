@@ -53,7 +53,7 @@ class ProductUpdateTest extends WP_UnitTestCase {
 
 		$this->product_attribute_connector = $this->createMock( Magento_Product_Attribute::class );
 		$this->product_attribute_connector->method( 'send_request' )
-			->willReturn( '{"is_wysiwyg_enabled":false,"is_html_allowed_on_front":true,"used_for_sort_by":false,"is_filterable":false,"is_filterable_in_search":false,"is_used_in_grid":true,"is_visible_in_grid":true,"is_filterable_in_grid":false,"position":0,"apply_to":[],"is_searchable":"0","is_visible_in_advanced_search":"0","is_comparable":"0","is_used_for_promo_rules":"0","is_visible_on_front":"0","used_in_product_listing":"0","is_visible":true,"scope":"global","attribute_id":138,"attribute_code":"nox_tracer_size","frontend_input":"select","entity_type_id":"4","is_required":true,"options":[{"label":" ","value":""},{"label":"S","value":"4"},{"label":"M\/L","value":"5"},{"label":"XL","value":"6"}],"is_user_defined":true,"default_frontend_label":"Size","frontend_labels":[{"store_id":1,"label":"Size"}],"backend_type":"int","source_model":"Magento\\Eav\\Model\\Entity\\Attribute\\Source\\Table","default_value":"","is_unique":"0","validation_rules":[]}' );
+			->willReturn( '{"is_wysiwyg_enabled":false,"is_html_allowed_on_front":true,"used_for_sort_by":false,"is_filterable":false,"is_filterable_in_search":false,"is_used_in_grid":true,"is_visible_in_grid":true,"is_filterable_in_grid":false,"position":0,"apply_to":[],"is_searchable":"0","is_visible_in_advanced_search":"0","is_comparable":"0","is_used_for_promo_rules":"0","is_visible_on_front":"0","used_in_product_listing":"0","is_visible":true,"scope":"global","attribute_id":138,"attribute_code":"nox_tracer_size","frontend_input":"select","entity_type_id":"4","is_required":true,"options":[{"label":" ","value":""},{"label":"S","value":"4"},{"label":"M\/L","value":"5"},{"label":"XL","value":"6"}],"is_user_defined":true,"default_frontend_label":"Size","frontend_labels":[{"store_id":1,"label":"Size"}],"backend_type":"int","default_value":"","is_unique":"0","validation_rules":[]}' );
 
 		//Insert some products
 		$this->insert_products();
@@ -213,6 +213,9 @@ class ProductUpdateTest extends WP_UnitTestCase {
 
 		$result = $wpdb->get_row("SELECT * from ${attributes_label_table} WHERE attribute_id = 138 AND value = 5");
 		$this->assertEquals('M/L', $result->attribute_value_label);
+
+		$result = $wpdb->get_row("SELECT * from ${attributes_label_table} WHERE attribute_id = 138 AND value = 6");
+		$this->assertEquals('XL', $result->attribute_value_label);
 	}
 
 

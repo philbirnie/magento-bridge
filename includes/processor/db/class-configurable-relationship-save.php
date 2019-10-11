@@ -60,8 +60,6 @@ class Configurable_Relationship_Save {
 			return $carry;
 		}, [] );
 
-		return 0 === count( array_diff( $existing_ids, $this->children_ids ) );
+		return 0 === count( array_merge( array_diff( $existing_ids, $this->children_ids ), array_diff( $this->children_ids, $existing_ids ) ) );
 	}
-
-
 }
