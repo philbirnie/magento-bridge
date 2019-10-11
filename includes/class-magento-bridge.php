@@ -80,7 +80,6 @@ class Magento_Bridge {
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
-
 	}
 
 	/**
@@ -212,4 +211,29 @@ class Magento_Bridge {
 	public function get_version() {
 		return $this->version;
 	}
+
+	/**
+	 * Gets Table Name
+	 *
+	 * @param $key
+	 *
+	 * @return string
+	 * @throws Exception
+	 */
+	public static function get_table_name( $key ) {
+
+		global $wpdb;
+
+		switch ( $key ) {
+			case 'attribute_label';
+			case 'child_attributes';
+			case 'configurable_attributes';
+			case 'configurable_children';
+			case 'products';
+				return $wpdb->prefix . self::BRIDGE_TABLE . sprintf( '_%s', $key );
+			default:
+				throw new Exception( sprintf( '%s is not a valid table name', $key ) );
+		}
+	}
+
 }

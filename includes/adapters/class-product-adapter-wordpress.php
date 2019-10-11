@@ -52,7 +52,7 @@ class Product_Adapter_Wordpress extends Product_Adapter_Abstract implements Prod
 		/** @var \wpdb $wpdb */
 		global $wpdb;
 
-		$table = $wpdb->prefix . \Magento_Bridge::BRIDGE_TABLE . '_products';
+		$table = \Magento_Bridge::get_table_name( 'products' );
 
 		/** @var  $query */
 		$result = $wpdb->get_row(
@@ -96,9 +96,9 @@ class Product_Adapter_Wordpress extends Product_Adapter_Abstract implements Prod
 		/** @var \wpdb $wpdb */
 		global $wpdb;
 
-		$configurable_pivot_table = $wpdb->prefix . \Magento_Bridge::BRIDGE_TABLE . '_configurable_children';
+		$configurable_pivot_table = \Magento_Bridge::get_table_name( 'configurable_children' );
 
-		$product_table = $wpdb->prefix . \Magento_Bridge::BRIDGE_TABLE . '_products';
+		$product_table = \Magento_Bridge::get_table_name( 'products' );
 
 		/** @var  $query */
 		$result = $wpdb->get_results(
@@ -127,8 +127,8 @@ class Product_Adapter_Wordpress extends Product_Adapter_Abstract implements Prod
 		/** @var \wpdb $wpdb */
 		global $wpdb;
 
-		$configurable_attribute_table = $wpdb->prefix . \Magento_Bridge::BRIDGE_TABLE . '_configurable_attributes';
-		$attribute_table              = $wpdb->prefix . \Magento_Bridge::BRIDGE_TABLE . '_attribute_label';
+		$configurable_attribute_table = \Magento_Bridge::get_table_name( 'configurable_attributes' );
+		$attribute_table              = \Magento_Bridge::get_table_name( 'attribute_label' );
 
 		/** @var  $query */
 		$result = $wpdb->get_results(
@@ -178,9 +178,9 @@ class Product_Adapter_Wordpress extends Product_Adapter_Abstract implements Prod
 		/** @var \wpdb $wpdb */
 		global $wpdb;
 
-		$child_attributes_table       = $wpdb->prefix . \Magento_Bridge::BRIDGE_TABLE . '_child_attributes';
-		$configurable_attribute_table = $wpdb->prefix . \Magento_Bridge::BRIDGE_TABLE . '_configurable_attributes';
-		$attribute_table              = $wpdb->prefix . \Magento_Bridge::BRIDGE_TABLE . '_attribute_label';
+		$child_attributes_table       = \Magento_Bridge::get_table_name( 'child_attributes' );
+		$configurable_attribute_table = \Magento_Bridge::get_table_name( 'configurable_attributes' );
+		$attribute_table              = \Magento_Bridge::get_table_name( 'attribute_label' );
 
 		/** @var  $query */
 

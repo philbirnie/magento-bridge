@@ -40,7 +40,7 @@ class Magento_Bridge_Activator {
 
 		$sql = [];
 
-		$product_table_name = $wpdb->prefix . Magento_Bridge::BRIDGE_TABLE . '_products';
+		$product_table_name = \Magento_Bridge::get_table_name('products');
 
 		$charset_collate = $wpdb->get_charset_collate();
 
@@ -63,7 +63,7 @@ class Magento_Bridge_Activator {
   UNIQUE KEY mkey (mage_id)
 ) $charset_collate;";
 
-		$configurable_children_name = $wpdb->prefix . Magento_Bridge::BRIDGE_TABLE . '_configurable_children';
+		$configurable_children_name = \Magento_Bridge::get_table_name('configurable_children');
 
 		$sql[] = "CREATE TABLE $configurable_children_name (
   id mediumint(9) NOT NULL AUTO_INCREMENT,
@@ -73,7 +73,7 @@ class Magento_Bridge_Activator {
   UNIQUE KEY parent_child (parent_id,child_id)
 ) $charset_collate;";
 
-		$configurable_attributes_table_name = $wpdb->prefix . Magento_Bridge::BRIDGE_TABLE . '_configurable_attributes';
+		$configurable_attributes_table_name = \Magento_Bridge::get_table_name('configurable_attributes');
 
 		$sql[] = "CREATE TABLE $configurable_attributes_table_name (
   id mediumint(9) NOT NULL AUTO_INCREMENT,
@@ -86,7 +86,7 @@ class Magento_Bridge_Activator {
 ) $charset_collate;";
 
 
-		$attribute_label_table = $wpdb->prefix . Magento_Bridge::BRIDGE_TABLE . '_attribute_label';
+		$attribute_label_table = \Magento_Bridge::get_table_name('attribute_label');
 
 		$sql[] = "CREATE TABLE $attribute_label_table (
   id mediumint(9) NOT NULL AUTO_INCREMENT,
@@ -98,7 +98,7 @@ class Magento_Bridge_Activator {
   KEY attribute_value (value)
 ) $charset_collate;";
 
-		$attribute_label_table = $wpdb->prefix . Magento_Bridge::BRIDGE_TABLE . '_child_attributes';
+		$attribute_label_table = \Magento_Bridge::get_table_name('child_attributes');
 
 		$sql[] = "CREATE TABLE $attribute_label_table (
   id mediumint(9) NOT NULL AUTO_INCREMENT,

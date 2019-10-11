@@ -9,7 +9,7 @@
 
 namespace Magento_Bridge\Connector;
 
-abstract class Connector_Magento_API_Abstract {
+abstract class Connector_Magento_API_Abstract implements Connector_Interface {
 
 	const REQUEST_BASE = '/rest/default/V1';
 
@@ -63,7 +63,7 @@ abstract class Connector_Magento_API_Abstract {
 
 		$request = $this->get_url() . self::REQUEST_BASE . $this->get_request();
 
-		$response = wp_safe_remote_request(
+		$response = wp_remote_request(
 			$request,
 			[
 				'method'  => $this->get_request_type(),

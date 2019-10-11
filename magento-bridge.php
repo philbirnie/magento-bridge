@@ -37,6 +37,9 @@ if ( ! defined( 'WPINC' ) ) {
  */
 define( 'PLUGIN_NAME_VERSION', '0.0.1' );
 
+/** Table Constants */
+
+
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-plugin-name-activator.php
@@ -64,6 +67,9 @@ register_deactivation_hook( __FILE__, 'deactivate_magento_bridge' );
  */
 require plugin_dir_path( __FILE__ ) . 'includes/class-magento-bridge.php';
 require plugin_dir_path( __FILE__ ) . 'includes/autoload.php';
+
+add_filter('http_request_host_is_external', '__return_true');
+add_filter( 'https_local_ssl_verify', '__return_false' );
 
 /**
  * Begins execution of the plugin.

@@ -42,15 +42,6 @@ class Product_Fetch {
 
 	}
 
-	protected function get_product_from_db() {
-
-
-	}
-
-	protected function get_product_from_store( $store_connector ) {
-
-	}
-
 	public function set_product( Product $product ) {
 		$this->product = $product;
 	}
