@@ -10,6 +10,8 @@
  * @subpackage Magento_Bridge/includes
  */
 
+use Magento_Bridge\Processor\Product_Update;
+
 /**
  * Fired during plugin activation.
  *
@@ -31,6 +33,13 @@ class Magento_Bridge_Activator {
 	 */
 	public static function activate() {
 		self::install_tables();
+		self::schedule_cron();
+	}
+
+	protected static function schedule_cron() {
+		if ( ! wp_next_scheduled( '\Magento_Bridge\Processor\Product_Update\Product_Update::run' ) ) {
+			wp_schedule_event( time(), 'hourly', '\Magento_Bridge\Processor\Product_Update\Product_Update::run' );
+		}
 	}
 
 	protected static function install_tables() {
@@ -40,7 +49,7 @@ class Magento_Bridge_Activator {
 
 		$sql = [];
 
-		$product_table_name = \Magento_Bridge::get_table_name('products');
+		$product_table_name = \Magento_Bridge::get_table_name( 'products' );
 
 		$charset_collate = $wpdb->get_charset_collate();
 
@@ -61,7 +70,7 @@ class Magento_Bridge_Activator {
   UNIQUE KEY mkey (mage_id)
 ) $charset_collate;";
 
-		$configurable_children_name = \Magento_Bridge::get_table_name('configurable_children');
+		$configurable_children_name = \Magento_Bridge::get_table_name( 'configurable_children' );
 
 		$sql[] = "CREATE TABLE $configurable_children_name (
   id mediumint(9) NOT NULL AUTO_INCREMENT,
@@ -71,7 +80,7 @@ class Magento_Bridge_Activator {
   UNIQUE KEY parent_child (parent_id,child_id)
 ) $charset_collate;";
 
-		$configurable_attributes_table_name = \Magento_Bridge::get_table_name('configurable_attributes');
+		$configurable_attributes_table_name = \Magento_Bridge::get_table_name( 'configurable_attributes' );
 
 		$sql[] = "CREATE TABLE $configurable_attributes_table_name (
   id mediumint(9) NOT NULL AUTO_INCREMENT,
@@ -84,7 +93,7 @@ class Magento_Bridge_Activator {
 ) $charset_collate;";
 
 
-		$attribute_label_table = \Magento_Bridge::get_table_name('attribute_label');
+		$attribute_label_table = \Magento_Bridge::get_table_name( 'attribute_label' );
 
 		$sql[] = "CREATE TABLE $attribute_label_table (
   id mediumint(9) NOT NULL AUTO_INCREMENT,
@@ -96,7 +105,7 @@ class Magento_Bridge_Activator {
   KEY attribute_value (value)
 ) $charset_collate;";
 
-		$attribute_label_table = \Magento_Bridge::get_table_name('child_attributes');
+		$attribute_label_table = \Magento_Bridge::get_table_name( 'child_attributes' );
 
 		$sql[] = "CREATE TABLE $attribute_label_table (
   id mediumint(9) NOT NULL AUTO_INCREMENT,
@@ -107,7 +116,7 @@ class Magento_Bridge_Activator {
   KEY product_id_key (product_id)
 ) $charset_collate;";
 
-		$related_products_table = \Magento_Bridge::get_table_name('related_products');
+		$related_products_table = \Magento_Bridge::get_table_name( 'related_products' );
 
 		$sql[] = "CREATE TABLE $related_products_table (
   id mediumint(9) NOT NULL AUTO_INCREMENT,

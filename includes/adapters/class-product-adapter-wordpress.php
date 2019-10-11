@@ -15,7 +15,7 @@ use Magento_Bridge\Product\Product;
 
 class Product_Adapter_Wordpress extends Product_Adapter_Abstract implements Product_Adapter_Interface {
 
-	const CACHE_AGE = 600;
+	const CACHE_AGE = 60 * 120;
 
 	/**
 	 * @return bool
@@ -84,7 +84,7 @@ class Product_Adapter_Wordpress extends Product_Adapter_Abstract implements Prod
 		$product->special_price     = $result->special_price ?? null;
 		$product->related           = isset( $result->related ) && strlen( $result->related ) > 0 ? explode( ',', $result->related ) : [];
 		$product->main_photo_url    = $result->main_photo_url ?? '';
-		$product->additional_photos = isset( $result->additional_photos ) && strlen( $result->additional_photos ) > 0 ? explode( ',', $result->additional_photos ) : [];
+		$product->additional_photos = isset( $result->additional_photos ) && strlen( $result->additional_photos ) > 0 ? json_decode( $result->additional_photos ) : [];
 		$product->type              = $result->type ?? 'simple';
 		$product->attributes        = $this->get_product_attributes( $product );
 

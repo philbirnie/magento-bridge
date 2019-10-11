@@ -30,7 +30,10 @@ class Magento_Bridge_Deactivator {
 	 * @since    1.0.0
 	 */
 	public static function deactivate() {
-
+		self::deactivate_cron();
 	}
 
+	public static function deactivate_cron() {
+		wp_clear_scheduled_hook( '\Magento_Bridge\Processor\Product_Update\Product_Update::run' );
+	}
 }
