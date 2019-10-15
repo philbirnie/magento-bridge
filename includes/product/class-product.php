@@ -50,4 +50,7 @@ class Product {
 
 	/** @var int */
 	public $cache_time = 0;
+
+	/** @var string url */
+	public $url = '';
 }

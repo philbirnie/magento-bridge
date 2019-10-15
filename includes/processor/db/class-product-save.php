@@ -20,7 +20,7 @@ class Product_Save {
 	protected $ignore_if_cache_is_okay;
 
 	public function __construct( $result, $ignore_if_cache_is_okay = false ) {
-		$this->result = is_string( $result ) ? json_decode( $result ) : $result;
+		$this->result                  = is_string( $result ) ? json_decode( $result ) : $result;
 		$this->ignore_if_cache_is_okay = $ignore_if_cache_is_okay;
 	}
 
@@ -43,7 +43,7 @@ class Product_Save {
 				$action = 'REPLACE';
 
 				/** If cache is okay, skip; this is frequently used for related products */
-				if($this->ignore_if_cache_is_okay && $existing_record->cache_time > time() - Product_Adapter_Wordpress::CACHE_AGE) {
+				if ( $this->ignore_if_cache_is_okay && $existing_record->cache_time > time() - Product_Adapter_Wordpress::CACHE_AGE ) {
 					return true;
 				}
 
@@ -138,6 +138,7 @@ class Product_Save {
 			'main_photo_url'    => $this->get_main_image_from_attributes( $this->result ),
 			'additional_photos' => json_encode( $this->get_additional_photos_from_attributes( $this->result ) ),
 			'cache_time'        => time(),
+			'url'               => $this->get_url_from_attributes( $this->result ),
 		];
 	}
 

@@ -9,6 +9,7 @@
 
 namespace Magento_Bridge\Adapters;
 
+use Magento_Bridge\Connector\Connector_Magento_API_Abstract;
 use Magento_Bridge\Product\Attribute;
 use Magento_Bridge\Product\Attribute_Value;
 use Magento_Bridge\Product\Product;
@@ -105,6 +106,7 @@ class Product_Adapter_Wordpress extends Product_Adapter_Abstract implements Prod
 		$product->additional_photos = isset( $result->additional_photos ) && strlen( $result->additional_photos ) > 0 ? json_decode( $result->additional_photos ) : [];
 		$product->type              = $result->type ?? 'simple';
 		$product->attributes        = $this->get_product_attributes( $product );
+		$product->url               = $this->get_product_url( $result->url ?? '' );
 
 		return $product;
 	}
@@ -138,6 +140,26 @@ class Product_Adapter_Wordpress extends Product_Adapter_Abstract implements Prod
 		}
 
 		return $current_product;
+	}
+
+	/**
+	 * $param string $url Stored Url.
+	 *
+	 * @return string
+	 */
+	protected function get_product_url( $url ) {
+		if ( false !== strpos( $url, 'http' ) ) {
+			return $url;
+		}
+
+		try {
+			$base_url = Connector_Magento_API_Abstract::get_url();
+		} catch ( \Exception $e ) {
+			error_log( 'Warning: Base URL not set' );
+			$base_url = '';
+		}
+
+		return sprintf( '%s/%s.html', $base_url, $url );
 	}
 
 	protected function add_configurable_attributes( Product $current_product ): Product {

@@ -180,6 +180,28 @@ class ProductUpdateTest extends WP_UnitTestCase {
 		$this->assertEquals( 0, $result[0] );
 	}
 
+	public function test_inserts_url() {
+		global $wpdb;
+
+		Product_Update::update_product( 'tracer360' );
+
+		$table = \Magento_Bridge::get_table_name( 'products' );
+
+		$result = $wpdb->get_row( "SELECT * from ${table} WHERE sku = 'tracer360'" );
+
+		$this->assertEquals( 'tracer360-visibility-safety-vest', $result->url );
+
+		$connector = $this->createMock( Magento_Simple_Product::class );
+		$connector->method( 'send_request' )
+			->willReturn( '{"id":1,"sku":"phil-test-product","name":"Phil\'s Test Product","attribute_set_id":4,"price":15.23,"status":1,"visibility":4,"type_id":"simple","created_at":"2019-09-16 14:47:51","updated_at":"2019-09-25 18:16:35","extension_attributes":{"website_ids":[1],"category_links":[{"position":0,"category_id":"3"}]},"product_links":[],"options":[],"media_gallery_entries":[{"id":1,"media_type":"image","label":null,"position":1,"disabled":false,"types":["image","small_image","thumbnail","swatch_image"],"file":"\/s\/h\/shoe.png"}],"tier_prices":[],"custom_attributes":[{"attribute_code":"image","value":"\/s\/h\/shoe.png"},{"attribute_code":"small_image","value":"\/s\/h\/shoe.png"},{"attribute_code":"special_price","value":"14.1000"},{"attribute_code":"thumbnail","value":"\/s\/h\/shoe.png"},{"attribute_code":"swatch_image","value":"\/s\/h\/shoe.png"},{"attribute_code":"special_from_date","value":"2019-09-12 00:00:00"},{"attribute_code":"special_to_date","value":"2019-09-21 00:00:00"},{"attribute_code":"options_container","value":"container2"},{"attribute_code":"msrp_display_actual_price_type","value":"0"},{"attribute_code":"url_key","value":"phil-s-test-product"},{"attribute_code":"nox_store_url","value":"http:\/\/whatever.com\/phil-test-product"},{"attribute_code":"gift_message_available","value":"2"},{"attribute_code":"required_options","value":"0"},{"attribute_code":"has_options","value":"0"},{"attribute_code":"meta_title","value":"Phil\'s Test Product"},{"attribute_code":"meta_keyword","value":"Phil\'s Test Product"},{"attribute_code":"meta_description","value":"Phil\'s Test Product"},{"attribute_code":"tax_class_id","value":"2"},{"attribute_code":"category_ids","value":["3"]}]}' );
+
+		Product_Update::set_connector( 'simple', $connector );
+		Product_Update::update_product( 'phil-test-product' );
+		$result = $wpdb->get_row( "SELECT * from ${table} WHERE sku = 'phil-test-product'" );
+
+		$this->assertEquals( 'http://whatever.com/phil-test-product', $result->url );
+	}
+
 	public function testAddsConfigurableAttributes() {
 		global $wpdb;
 
@@ -267,15 +289,15 @@ class ProductUpdateTest extends WP_UnitTestCase {
 
 		$products = Magento_Bridge::get_table_name( 'products' );
 
-		$cache_time = time() -10;
+		$cache_time = time() - 10;
 
 		$wpdb->insert(
 			$products,
 			[
-				'sku' => 'lighthound',
-				'mage_id' => 58,
-				'price' => 5,
-				'type' => 'configurable',
+				'sku'        => 'lighthound',
+				'mage_id'    => 58,
+				'price'      => 5,
+				'type'       => 'configurable',
 				'cache_time' => $cache_time
 			]
 		);

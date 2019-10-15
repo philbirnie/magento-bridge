@@ -61,7 +61,7 @@ class Magento_Bridge_Activator {
   price FLOAT NOT NULL,
   special_price FLOAT,
   type ENUM ('simple','configurable','grouped'),
-  related text,
+  url text,
   main_photo_url text,
   additional_photos text,
   cache_time int(10) UNSIGNED,

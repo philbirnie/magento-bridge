@@ -34,7 +34,7 @@ class ProductAdapterWordpressTest extends WP_UnitTestCase {
 				'price'         => 15.09,
 				'special_price' => 14.50,
 				'type'          => 'simple',
-				'related'       => '',
+				'url'           => 'some-product',
 				'cache_time'    => time(),
 			]
 		);
@@ -48,7 +48,7 @@ class ProductAdapterWordpressTest extends WP_UnitTestCase {
 				'price'         => 15.09,
 				'special_price' => 14.50,
 				'type'          => 'simple',
-				'related'       => '',
+				'url'           => '',
 				'cache_time'    => time() - Product_Adapter_Wordpress::CACHE_AGE - 1,
 			]
 		);
@@ -62,7 +62,7 @@ class ProductAdapterWordpressTest extends WP_UnitTestCase {
 				'price'         => 22.00,
 				'special_price' => 0,
 				'type'          => 'simple',
-				'related'       => '',
+				'url'           => 'https://some-other-url.com/some-related-product',
 				'cache_time'    => time() - Product_Adapter_Wordpress::CACHE_AGE - 1,
 			]
 		);
@@ -76,7 +76,7 @@ class ProductAdapterWordpressTest extends WP_UnitTestCase {
 				'price'         => 22.00,
 				'special_price' => 0,
 				'type'          => 'simple',
-				'related'       => '',
+				'url'           => '',
 				'cache_time'    => time() - Product_Adapter_Wordpress::CACHE_AGE - 1,
 			]
 		);
@@ -90,7 +90,7 @@ class ProductAdapterWordpressTest extends WP_UnitTestCase {
 				'price'         => 22.00,
 				'special_price' => 0,
 				'type'          => 'simple',
-				'related'       => '',
+				'url'           => '',
 				'cache_time'    => time() - Product_Adapter_Wordpress::CACHE_AGE - 1,
 			]
 		);
@@ -154,6 +154,12 @@ class ProductAdapterWordpressTest extends WP_UnitTestCase {
 		$this->assertEquals( 2, count( $tracer->configurable_attributes['138']->values ) );
 	}
 
+	public function testShouldReturnCorrectUrl() {
+		$tracer = $this->configurable_adapter->get_product();
+		$this->assertNotEmpty( $tracer->url );
+		$this->assertEquals( 'https://192.168.33.16:8001/tracer360.html', $tracer->url );
+	}
+
 	public function testChildProductContainsCorrectAttribute() {
 		$tracer = $this->configurable_adapter->get_product();
 
@@ -165,15 +171,15 @@ class ProductAdapterWordpressTest extends WP_UnitTestCase {
 		$this->assertEquals( $medium_product->attributes['tracer_size'], 'M' );
 	}
 
-	public function testShouldReturnCorrectRelatedProducts(  ) {
+	public function testShouldReturnCorrectRelatedProducts() {
 		$related_products = $this->adapter->get_related_products();
 
-		$this->assertCount(2, $related_products);
+		$this->assertCount( 2, $related_products );
 
 		$related = $related_products[0];
 
-		$this->assertEquals(100, $related->mage_id);
-		$this->assertEquals('Some Related Product', $related->name);
+		$this->assertEquals( 100, $related->mage_id );
+		$this->assertEquals( 'Some Related Product', $related->name );
 	}
 
 	protected function insertConfigurableProduct() {
@@ -190,7 +196,7 @@ class ProductAdapterWordpressTest extends WP_UnitTestCase {
 				'price'         => 0,
 				'special_price' => 0,
 				'type'          => 'configurable',
-				'related'       => '',
+				'url'           => 'tracer360',
 				'cache_time'    => time(),
 			]
 		);
@@ -204,7 +210,6 @@ class ProductAdapterWordpressTest extends WP_UnitTestCase {
 				'price'         => 65,
 				'special_price' => 0,
 				'type'          => 'simple',
-				'related'       => '',
 				'cache_time'    => time(),
 			]
 		);
@@ -218,7 +223,6 @@ class ProductAdapterWordpressTest extends WP_UnitTestCase {
 				'price'         => 68,
 				'special_price' => 0,
 				'type'          => 'simple',
-				'related'       => '',
 				'cache_time'    => time(),
 			]
 		);
@@ -294,25 +298,25 @@ class ProductAdapterWordpressTest extends WP_UnitTestCase {
 		global $wpdb;
 
 		$wpdb->insert(
-			Magento_Bridge::get_table_name('related_products'),
+			Magento_Bridge::get_table_name( 'related_products' ),
 			[
-				'parent_id'     => 2,
+				'parent_id'  => 2,
 				'related_id' => 100,
 			]
 		);
 
 		$wpdb->insert(
-			Magento_Bridge::get_table_name('related_products'),
+			Magento_Bridge::get_table_name( 'related_products' ),
 			[
-				'parent_id'     => 2,
+				'parent_id'  => 2,
 				'related_id' => 101,
 			]
 		);
 
 		$wpdb->insert(
-			Magento_Bridge::get_table_name('related_products'),
+			Magento_Bridge::get_table_name( 'related_products' ),
 			[
-				'parent_id'     => 3,
+				'parent_id'  => 3,
 				'related_id' => 102,
 			]
 		);

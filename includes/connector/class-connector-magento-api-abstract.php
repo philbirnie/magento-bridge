@@ -25,7 +25,7 @@ abstract class Connector_Magento_API_Abstract implements Connector_Interface {
 	 * @return string
 	 * @throws \Exception If url is not set
 	 */
-	protected function get_url(): string {
+	public static function get_url(): string {
 		if ( defined( 'MAGENTO_API_URL' ) ) {
 			return MAGENTO_API_URL;
 		}
@@ -61,7 +61,7 @@ abstract class Connector_Magento_API_Abstract implements Connector_Interface {
 	 */
 	public function send_request() {
 
-		$request = $this->get_url() . self::REQUEST_BASE . $this->get_request();
+		$request = self::get_url() . self::REQUEST_BASE . $this->get_request();
 
 		$response = wp_remote_request(
 			$request,

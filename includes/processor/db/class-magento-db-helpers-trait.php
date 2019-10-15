@@ -27,7 +27,7 @@ trait Magento_Db_Helpers_Trait {
 			return '';
 		}
 
-		$image_attributes = array_values($image_attributes);
+		$image_attributes = array_values( $image_attributes );
 
 		return isset( $image_attributes[0]->value ) ? sprintf( 'media/catalog/product%s', $image_attributes[0]->value ) : '';
 	}
@@ -49,11 +49,29 @@ trait Magento_Db_Helpers_Trait {
 			return 0.00;
 		}
 
-		$special_price = array_values($special_price);
+		$special_price = array_values( $special_price );
 
 		return $special_price[0]->value ?? 0.00;
 	}
 
+
+	/**
+	 * Convenience function to get all custom attributes;
+	 *
+	 * @param $result
+	 *
+	 * @return array
+	 */
+	protected function get_custom_attributes( $result ): array {
+
+		$attributes = [];
+
+		foreach ( $result->custom_attributes ?? [] as $custom_attribute ) {
+			$attributes[ $custom_attribute->attribute_code ] = $custom_attribute->value;
+		}
+
+		return $attributes;
+	}
 
 	/**
 	 * Gets a JSON of additional photos from attributes
@@ -62,11 +80,23 @@ trait Magento_Db_Helpers_Trait {
 	 *
 	 * @return []
 	 */
-	protected function get_additional_photos_from_attributes( $result ) : array {
+	protected function get_additional_photos_from_attributes( $result ): array {
 		return array_reduce( $result->media_gallery_entries ?? [], function ( $carry, $photo ) {
 			$carry[] = sprintf( 'media/catalog/product%s', $photo->file );
 			return $carry;
 		}, [] );
+	}
+
+	protected function get_url_from_attributes( $result ): string {
+
+		$store_url_attribute = 'nox_store_url';
+
+		$custom_attributes = $this->get_custom_attributes( $result );
+
+		if ( isset( $custom_attributes[ $store_url_attribute ] ) ) {
+			return $custom_attributes[ $store_url_attribute ];
+		}
+		return $custom_attributes['url_key'] ?? '';
 	}
 
 
