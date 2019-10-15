@@ -87,6 +87,26 @@ trait Magento_Db_Helpers_Trait {
 		}, [] );
 	}
 
+	/**
+	 * Gets Description from Attributes
+	 *
+	 * @param $result
+	 *
+	 * @return string
+	 */
+	protected function get_description_from_attributes( $result ): string {
+		$description_attribute = array_filter( $result->custom_attributes ?? [], function ( $attribute ) {
+			return isset( $attribute->attribute_code ) && 'short_description' === $attribute->attribute_code;
+		} );
+
+		$description_attribute = array_values( $description_attribute );
+
+		if ( $description_attribute ) {
+			return strip_tags( $description_attribute[0]->value );
+		}
+		return '';
+	}
+
 	protected function get_url_from_attributes( $result ): string {
 
 		$store_url_attribute = 'nox_store_url';

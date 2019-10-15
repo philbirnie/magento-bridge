@@ -160,6 +160,12 @@ class ProductAdapterWordpressTest extends WP_UnitTestCase {
 		$this->assertEquals( 'https://192.168.33.16:8001/tracer360.html', $tracer->url );
 	}
 
+	public function testShouldReturnDescription() {
+		$tracer = $this->configurable_adapter->get_product();
+		$this->assertNotEmpty( $tracer->description );
+		$this->assertEquals( 'Some Short Description', $tracer->description );
+	}
+
 	public function testChildProductContainsCorrectAttribute() {
 		$tracer = $this->configurable_adapter->get_product();
 
@@ -196,6 +202,7 @@ class ProductAdapterWordpressTest extends WP_UnitTestCase {
 				'price'         => 0,
 				'special_price' => 0,
 				'type'          => 'configurable',
+				'description'   => 'Some Short Description',
 				'url'           => 'tracer360',
 				'cache_time'    => time(),
 			]

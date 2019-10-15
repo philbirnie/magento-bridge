@@ -138,6 +138,7 @@ class Product_Save {
 			'main_photo_url'    => $this->get_main_image_from_attributes( $this->result ),
 			'additional_photos' => json_encode( $this->get_additional_photos_from_attributes( $this->result ) ),
 			'cache_time'        => time(),
+			'description'       => $this->get_description_from_attributes( $this->result ),
 			'url'               => $this->get_url_from_attributes( $this->result ),
 		];
 	}

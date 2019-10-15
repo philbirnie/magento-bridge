@@ -53,4 +53,7 @@ class Product {
 
 	/** @var string url */
 	public $url = '';
+
+	/** @var description */
+	public $description;
 }
