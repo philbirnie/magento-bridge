@@ -211,7 +211,7 @@ class ProductUpdateTest extends WP_UnitTestCase {
 
 		$result = $wpdb->get_row( "SELECT * from ${table} WHERE sku = 'tracer360'" );
 
-		$this->assertEquals( 'The Tracer360 is a high visibility vest', $result->description );
+		$this->assertContains( 'The Tracer360 is a high visibility vest', $result->description );
 	}
 
 	public function testAddsConfigurableAttributes() {
