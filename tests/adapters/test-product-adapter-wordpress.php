@@ -142,16 +142,16 @@ class ProductAdapterWordpressTest extends WP_UnitTestCase {
 		$tracer = $this->configurable_adapter->get_product();
 
 		$this->assertNotEmpty( $tracer->configurable_attributes );
-		$this->assertEquals( 'tracer_size', $tracer->configurable_attributes['138']->code );
-		$this->assertEquals( 138, $tracer->configurable_attributes['138']->id );
-		$this->assertEquals( 'Size', $tracer->configurable_attributes['138']->label );
+		$this->assertEquals( 'tracer_size', $tracer->configurable_attributes['tracer_size']->code );
+		$this->assertEquals( 138, $tracer->configurable_attributes['tracer_size']->id );
+		$this->assertEquals( 'Size', $tracer->configurable_attributes['tracer_size']->label );
 	}
 
 	public function testShouldReturnAllConfigurableAttributeValuesForProduct() {
 		$tracer           = $this->configurable_adapter->get_product();
-		$attribute_values = $tracer->configurable_attributes['138']->values;
+		$attribute_values = $tracer->configurable_attributes['tracer_size']->values;
 		$this->assertNotEmpty( $attribute_values );
-		$this->assertEquals( 2, count( $tracer->configurable_attributes['138']->values ) );
+		$this->assertEquals( 2, count( $tracer->configurable_attributes['tracer_size']->values ) );
 	}
 
 	public function testShouldReturnCorrectUrl() {

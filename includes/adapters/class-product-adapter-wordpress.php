@@ -193,19 +193,19 @@ class Product_Adapter_Wordpress extends Product_Adapter_Abstract implements Prod
 
 		foreach ( $result as $configurable_attribute_label ) {
 
-			if ( ! isset( $current_product->configurable_attributes[ $configurable_attribute_label->attribute_id ] ) ) {
-				$attribute                                                                               = new Attribute();
-				$attribute->code                                                                         = $configurable_attribute_label->attribute_code;
-				$attribute->id                                                                           = $configurable_attribute_label->attribute_id;
-				$attribute->label                                                                        = $configurable_attribute_label->attribute_label;
-				$current_product->configurable_attributes[ $configurable_attribute_label->attribute_id ] = $attribute;
+			if ( ! isset( $current_product->configurable_attributes[ $configurable_attribute_label->attribute_code ] ) ) {
+				$attribute                                                                                 = new Attribute();
+				$attribute->code                                                                           = $configurable_attribute_label->attribute_code;
+				$attribute->id                                                                             = $configurable_attribute_label->attribute_id;
+				$attribute->label                                                                          = $configurable_attribute_label->attribute_label;
+				$current_product->configurable_attributes[ $configurable_attribute_label->attribute_code ] = $attribute;
 			}
 
 			$value        = new Attribute_Value();
 			$value->label = $configurable_attribute_label->attribute_value_label;
 			$value->value = $configurable_attribute_label->value;
 
-			$current_product->configurable_attributes[ $configurable_attribute_label->attribute_id ]->values[] = $value;
+			$current_product->configurable_attributes[ $configurable_attribute_label->attribute_code ]->values[] = $value;
 		}
 
 		return $current_product;
