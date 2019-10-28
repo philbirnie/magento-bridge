@@ -40,7 +40,7 @@ trait Magento_Db_Helpers_Trait {
 	 *
 	 * @return float
 	 */
-	protected function get_special_price_from_attributes( $result ) {
+	public function get_special_price_from_attributes( $result ) {
 		$special_price = array_filter( $result->custom_attributes ?? [], function ( $attribute ) {
 			return isset( $attribute->attribute_code ) && 'special_price' === $attribute->attribute_code;
 		} );
