@@ -102,7 +102,7 @@ trait Magento_Db_Helpers_Trait {
 		$description_attribute = array_values( $description_attribute );
 
 		if ( $description_attribute ) {
-			return strip_tags( htmlspecialchars( $description_attribute[0]->value, ENT_QUOTES ) );
+			return strip_tags($description_attribute[0]->value);
 		}
 		return '';
 	}
