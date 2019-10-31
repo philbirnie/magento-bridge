@@ -187,7 +187,7 @@ class Product_Update {
 					/** Last Step -- Save configurable children so price is set, but no need to worry about attributes */
 					if($related_product_save->save_was_configurable()) {
 						// Save Configurable Products
-						$related_configurable_product_connector = self::$connectors['configurable'] ?? new Magento_Configurable_Children( $sku );
+						$related_configurable_product_connector = self::$connectors['configurable'] ?? new Magento_Configurable_Children( $related_product_save->get_sku() );
 						$related_configurable_children_response = $related_configurable_product_connector->send_request();
 
 						if ( ! $related_configurable_children_response ) {

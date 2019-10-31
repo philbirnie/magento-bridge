@@ -122,6 +122,10 @@ class Product_Save {
 		return $this->result->id ?? 0;
 	}
 
+	public function get_sku(  ) {
+		return $this->result->sku ?? '';
+	}
+
 	/**
 	 * Transpose form API response to Database Fields.
 	 *
