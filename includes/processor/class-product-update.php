@@ -11,11 +11,9 @@ namespace Magento_Bridge\Processor;
 
 use Magento_Bridge\Adapters\Product_Adapter_Wordpress;
 use Magento_Bridge\Connector\Connector_Interface;
-use Magento_Bridge\Connector\Request\Magento_Configurable_Children;
 use Magento_Bridge\Connector\Request\Magento_Product_Attribute;
 use Magento_Bridge\Connector\Request\Magento_Simple_Product;
 use Magento_Bridge\Processor\Db\Configurable_Attribute_Save;
-use Magento_Bridge\Processor\Db\Configurable_Children_Save;
 use Magento_Bridge\Processor\Db\Product_Attribute_Save;
 use Magento_Bridge\Processor\Db\Product_Save;
 use Magento_Bridge\Processor\Db\Related_Relationship_Save;
