@@ -32,6 +32,13 @@ trait Magento_Db_Helpers_Trait {
 		return isset( $image_attributes[0]->value ) ? sprintf( 'media/catalog/product%s', $image_attributes[0]->value ) : '';
 	}
 
+	public function get_price( $result ) {
+		if ( 'configurable' != $result->type_id ) {
+			return $result->price;
+		}
+
+		return $result->extension_attributes->configurable_base ?? $result->price;
+	}
 
 	/**
 	 * Gets Special Price from Attributes
@@ -41,17 +48,22 @@ trait Magento_Db_Helpers_Trait {
 	 * @return float
 	 */
 	public function get_special_price_from_attributes( $result ) {
-		$special_price = array_filter( $result->custom_attributes ?? [], function ( $attribute ) {
-			return isset( $attribute->attribute_code ) && 'special_price' === $attribute->attribute_code;
-		} );
 
-		if ( ! $special_price ) {
-			return 0.00;
+		if ( 'configurable' != $result->type_id ) {
+			$special_price = array_filter( $result->custom_attributes ?? [], function ( $attribute ) {
+				return isset( $attribute->attribute_code ) && 'special_price' === $attribute->attribute_code;
+			} );
+
+			if ( ! $special_price ) {
+				return 0.00;
+			}
+
+			$special_price = array_values( $special_price );
+
+			return $special_price[0]->value ?? 0.00;
+		} else {
+			return $result->extension_attributes->configurable_special ?? 0.00;
 		}
-
-		$special_price = array_values( $special_price );
-
-		return $special_price[0]->value ?? 0.00;
 	}
 
 
@@ -102,7 +114,7 @@ trait Magento_Db_Helpers_Trait {
 		$description_attribute = array_values( $description_attribute );
 
 		if ( $description_attribute ) {
-			return strip_tags($description_attribute[0]->value);
+			return strip_tags( $description_attribute[0]->value );
 		}
 		return '';
 	}

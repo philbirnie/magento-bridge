@@ -132,7 +132,7 @@ class Product_Save {
 			'sku'               => $this->result->sku,
 			'mage_id'           => $this->result->id,
 			'name'              => $this->result->name,
-			'price'             => $this->result->price,
+			'price'             => $this->get_price($this->result),
 			'special_price'     => $this->get_special_price_from_attributes( $this->result ),
 			'type'              => $this->result->type_id,
 			'main_photo_url'    => $this->get_main_image_from_attributes( $this->result ),

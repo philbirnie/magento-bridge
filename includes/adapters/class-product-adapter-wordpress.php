@@ -86,7 +86,6 @@ class Product_Adapter_Wordpress extends Product_Adapter_Abstract implements Prod
 
 		if ( 'configurable' == $result->type ) {
 			$result = $this->add_configurable_attributes( $result );
-			$result = $this->add_child_products( $result );
 		}
 
 		return $result;
@@ -105,42 +104,10 @@ class Product_Adapter_Wordpress extends Product_Adapter_Abstract implements Prod
 		$product->main_photo_url    = $result->main_photo_url ?? '';
 		$product->additional_photos = isset( $result->additional_photos ) && strlen( $result->additional_photos ) > 0 ? json_decode( $result->additional_photos ) : [];
 		$product->type              = $result->type ?? 'simple';
-		$product->attributes        = $this->get_product_attributes( $product );
 		$product->description       = $result->description ?? '';
 		$product->url               = $this->get_product_url( $result->url ?? '' );
 
 		return $product;
-	}
-
-	protected function add_child_products( Product $current_product ): Product {
-
-		/** @var \wpdb $wpdb */
-		global $wpdb;
-
-		$configurable_pivot_table = \Magento_Bridge::get_table_name( 'configurable_children' );
-
-		$product_table = \Magento_Bridge::get_table_name( 'products' );
-
-		/** @var  $query */
-		$result = $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT * 
-				FROM ${product_table} as products
-				INNER JOIN ${configurable_pivot_table} as configurable_children
-				ON products.mage_id = configurable_children.child_id
-				WHERE configurable_children.parent_id=%d",
-				$current_product->mage_id )
-		);
-
-		if ( ! $result ) {
-			return $current_product;
-		}
-
-		foreach ( $result as $child_product_result ) {
-			$current_product->children[] = $this->transpose( $child_product_result );
-		}
-
-		return $current_product;
 	}
 
 	/**
@@ -209,42 +176,6 @@ class Product_Adapter_Wordpress extends Product_Adapter_Abstract implements Prod
 		}
 
 		return $current_product;
-	}
-
-	protected function get_product_attributes( Product $product ): array {
-		if ( ! $product->mage_id || 'simple' !== $product->type ) {
-			return [];
-		}
-
-		/** @var \wpdb $wpdb */
-		global $wpdb;
-
-		$child_attributes_table       = \Magento_Bridge::get_table_name( 'child_attributes' );
-		$configurable_attribute_table = \Magento_Bridge::get_table_name( 'configurable_attributes' );
-		$attribute_table              = \Magento_Bridge::get_table_name( 'attribute_label' );
-
-		/** @var  $query */
-
-		/** @var  $query */
-		$result = $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT child_attributes.attribute_code,child_attributes.value,attribute_label.attribute_value_label as label
-					FROM ${child_attributes_table} as child_attributes
-					INNER JOIN ${configurable_attribute_table} as configurable_attributes 
-					ON child_attributes.attribute_code = configurable_attributes.attribute_code
-					INNER JOIN ${attribute_table} as attribute_label
-					ON child_attributes.value = attribute_label.value
-				WHERE child_attributes.product_id=%d",
-				$product->mage_id )
-		);
-
-		$attributes = [];
-
-		foreach ( $result as $attribute ) {
-			$attributes[ $attribute->attribute_code ] = $attribute->label;
-		}
-
-		return $attributes;
 	}
 
 	protected function get_related_skus(): array {

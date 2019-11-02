@@ -157,18 +157,6 @@ class Product_Update {
 				$attribute_save = new Product_Attribute_Save( $attribute_response );
 				$attribute_save->save();
 			}
-
-			// Save Configurable Products
-			$configurable_product_connector = self::$connectors['configurable'] ?? new Magento_Configurable_Children( $sku );
-			$configurable_children_response = $configurable_product_connector->send_request();
-
-			if ( ! $configurable_children_response ) {
-				throw new \Exception( 'Unable to get response for children products for ' . $sku . '; cannot add children products!' );
-			}
-
-			/** @var int $parent_id Parent ID. */
-			$configurable_children_save = new Configurable_Children_Save( $configurable_children_response, $saved_product_id );
-			$configurable_children_save->save();
 		}
 
 		// Save Related Products
@@ -183,22 +171,6 @@ class Product_Update {
 				$related_product_id = $related_product_save->get_id();
 				if($related_product_id) {
 					$related_product_ids[] = $related_product_id;
-
-					/** Last Step -- Save configurable children so price is set, but no need to worry about attributes */
-					if($related_product_save->save_was_configurable()) {
-						// Save Configurable Products
-						$related_configurable_product_connector = self::$connectors['configurable'] ?? new Magento_Configurable_Children( $sku );
-						$related_configurable_children_response = $related_configurable_product_connector->send_request();
-
-						if ( ! $related_configurable_children_response ) {
-							throw new \Exception( 'Unable to get response for children products for related product ' . $sku . '; cannot add children products!' );
-						}
-
-						/** @var int $parent_id Parent ID. */
-						$related_configurable_children_save = new Configurable_Children_Save( $related_configurable_children_response, $related_product_id );
-						$related_configurable_children_save->save();
-					}
-
 				}
 			}
 		}

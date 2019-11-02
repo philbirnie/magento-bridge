@@ -130,14 +130,6 @@ class ProductAdapterWordpressTest extends WP_UnitTestCase {
 		$this->assertFalse( $adpater->is_cache_valid() );
 	}
 
-	public function testShouldReturnChildrenProductsIfConfigurable() {
-
-		/** @var Product $tracer */
-		$tracer = $this->configurable_adapter->get_product();
-
-		$this->assertEquals( 2, count( $tracer->children ) );
-	}
-
 	public function testShouldReturnConfigurableAttributesIfConfigurable() {
 		$tracer = $this->configurable_adapter->get_product();
 
@@ -164,17 +156,6 @@ class ProductAdapterWordpressTest extends WP_UnitTestCase {
 		$tracer = $this->configurable_adapter->get_product();
 		$this->assertNotEmpty( $tracer->description );
 		$this->assertEquals( 'Some Short Description', $tracer->description );
-	}
-
-	public function testChildProductContainsCorrectAttribute() {
-		$tracer = $this->configurable_adapter->get_product();
-
-		/** @var Product $small_product */
-		$small_product  = $tracer->children[0];
-		$medium_product = $tracer->children[1];
-
-		$this->assertEquals( $small_product->attributes['tracer_size'], 'S' );
-		$this->assertEquals( $medium_product->attributes['tracer_size'], 'M' );
 	}
 
 	public function testShouldReturnCorrectRelatedProducts() {
