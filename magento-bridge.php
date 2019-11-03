@@ -68,8 +68,12 @@ register_deactivation_hook( __FILE__, 'deactivate_magento_bridge' );
 require plugin_dir_path( __FILE__ ) . 'includes/class-magento-bridge.php';
 require plugin_dir_path( __FILE__ ) . 'includes/autoload.php';
 
-add_filter('http_request_host_is_external', '__return_true');
-add_filter( 'https_local_ssl_verify', '__return_false' );
+add_filter( 'http_request_host_is_external', '__return_true' );
+
+/** If WP_DEBUG, we're working locally and there is not a need to validate the SSL. */
+if ( WP_DEBUG ) {
+	add_filter( 'https_local_ssl_verify', '__return_false' );
+}
 
 /**
  * Begins execution of the plugin.
