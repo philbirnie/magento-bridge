@@ -73,22 +73,48 @@ class Magento_Bridge_Admin {
 			'magento_bridge_options',
 			[ self::class, 'display_settings' ]
 		);
+
+		setcookie( 'magento_bridge_message', '', time() - 1 );
+		setcookie( 'magento_bridge_message_status', '', time() - 1 );
 	}
 
 	public static function action_clear_fetch_products() {
-		if ( ! wp_verify_nonce( 'magento_bridge_clear_cache' ) || ! current_user_can( 'manage_options' ) ) {
+		if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'magento_bridge_clear_cache' ) || ! current_user_can( 'manage_options' ) ) {
 			die( 'Nonce Verification failed. Please try again' );
 		}
 
-		Product_Update::run( true );
+		try {
+			Product_Update::run( true );
+			setcookie( 'magento_bridge_message', 'Cache Cleared and New Products Fetched' );
+			setcookie( 'magento_bridge_message_status', 'success' );
+		} catch ( Exception $e ) {
+			setcookie( 'magento_bridge_message', $e->getMessage() );
+			setcookie( 'magento_bridge_message_status', 'error' );
+		}
 
 		wp_redirect( $_SERVER['HTTP_REFERER'] );
 		exit();
 	}
 
+	public static function admin_fetch_products_status() {
+
+		if ( isset( $_COOKIE['magento_bridge_message'] ) ) {
+			?>
+			<div class="notice notice-<?php echo esc_attr( $_COOKIE['magento_bridge_message_status'] ); ?>">
+				<p><?php echo esc_html( $_COOKIE['magento_bridge_message'] ); ?></p>
+			</div>
+
+			<?php
+		}
+		?>
+		<?php
+	}
+
 	public static function display_settings() {
+		add_action( 'admin_notices', [ self::class, 'admin_fetch_products_status' ] );
 		?>
 		<div>
+			<?php do_action( 'admin_notices' ); ?>
 			<h2>Magento Connection Settings</h2>
 			<form method="post" action="options.php">
 				<?php settings_fields( 'magento_bridge_options_group' ); ?>
