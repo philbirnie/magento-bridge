@@ -10,6 +10,8 @@
  * @subpackage Plugin_Name/admin
  */
 
+use Magento_Bridge\Processor\Product_Update;
+
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -73,6 +75,17 @@ class Magento_Bridge_Admin {
 		);
 	}
 
+	public static function action_clear_fetch_products() {
+		if ( ! wp_verify_nonce( 'magento_bridge_clear_cache' ) || ! current_user_can( 'manage_options' ) ) {
+			die( 'Nonce Verification failed. Please try again' );
+		}
+
+		Product_Update::run( true );
+
+		wp_redirect( $_SERVER['HTTP_REFERER'] );
+		exit();
+	}
+
 	public static function display_settings() {
 		?>
 		<div>
@@ -87,7 +100,8 @@ class Magento_Bridge_Admin {
 						<?php
 						if ( defined( 'MAGENTO_API_URL' ) ) {
 							?>
-							<p><code>MAGENTO_API_URL</code> is set in your <code>wp-config.php</code> and therefore, that value will be used.</p>
+							<p><code>MAGENTO_API_URL</code> is set in your <code>wp-config.php</code> and therefore,
+								that value will be used.</p>
 							<?php
 						} else {
 							?>
@@ -105,7 +119,8 @@ class Magento_Bridge_Admin {
 						<?php
 						if ( defined( 'MAGENTO_API_AUTH' ) ) {
 							?>
-							<p><code>MAGENTO_API_AUTH</code> is set in your <code>wp-config.php</code> and therefore, that value will be used.</p>
+							<p><code>MAGENTO_API_AUTH</code> is set in your <code>wp-config.php</code> and therefore,
+								that value will be used.</p>
 							<?php
 						} else {
 							?>
@@ -118,6 +133,18 @@ class Magento_Bridge_Admin {
 
 				</table>
 				<?php submit_button(); ?>
+			</form>
+
+			<hr/>
+
+			<h2>Clear Product Cache and Re-Fetch</h2>
+			<p>By default, the Cron will featch products using the Magento API once per hour. However, if a product
+				update is urgent, you may click the button below to immediately re-fetch all product data.</p>
+			<form action="<?php echo admin_url( 'admin.php' ); ?>" method="post">
+				<input type="hidden" value="1" name="magento_bridge_clear_cache"/>
+				<input type="hidden" name="action" value="magento_bridge_clear_fetch"/>
+				<?php wp_nonce_field( 'magento_bridge_clear_cache' ); ?>
+				<?php submit_button( 'Clear Cache and Re-Fetch Data' ); ?>
 			</form>
 		</div>
 		<?php

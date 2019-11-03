@@ -156,6 +156,7 @@ class Magento_Bridge {
 		//$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'register_settings' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'register_option_page' );
+		$this->loader->add_action( 'admin_action_magento_bridge_clear_fetch', $plugin_admin, 'action_clear_fetch_products' );
 
 	}
 

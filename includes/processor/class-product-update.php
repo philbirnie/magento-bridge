@@ -23,11 +23,16 @@ class Product_Update {
 	/** @var array Connectors */
 	public static $connectors = [];
 
-	public static function run() {
-		$expired_products = self::get_expired_products();
-		$new_products = self::get_new_product_skus();
+	public static function run( $clear_cache = false ) {
 
-		$products_to_update = array_merge($expired_products, $new_products);
+		if ( $clear_cache ) {
+			self::clear_cache();
+		}
+
+		$expired_products = self::get_expired_products();
+		$new_products     = self::get_new_product_skus();
+
+		$products_to_update = array_merge( $expired_products, $new_products );
 
 		/** @var string $expired_product SKU. */
 		foreach ( $products_to_update as $product ) {
@@ -56,7 +61,7 @@ class Product_Update {
 			FROM  ${table}"
 		);
 
-		return array_diff($all_products, $result);
+		return array_diff( $all_products, $result );
 	}
 
 	public static function get_expired_products() {
@@ -87,6 +92,15 @@ class Product_Update {
 
 		return $result;
 	}
+
+	public static function clear_cache() {
+		global $wpdb;
+
+		$table = \Magento_Bridge::get_table_name( 'products' );
+
+		return $wpdb->query( "UPDATE {$table} SET cache_time = 0" );
+	}
+
 
 	public static function get_all_product_skus(): array {
 
@@ -159,7 +173,7 @@ class Product_Update {
 
 		// Save Related Products
 		$related_product_items = $product_save->get_related_items();
-		$related_product_ids = [];
+		$related_product_ids   = [];
 		foreach ( $related_product_items as $related_product_item ) {
 			$related_product_connector = self::$connectors['simple'] ?? new Magento_Simple_Product( $related_product_item->linked_product_sku );
 			$related_product_response  = $related_product_connector->send_request();
@@ -167,13 +181,13 @@ class Product_Update {
 				$related_product_save = new Product_Save( $related_product_response, true );
 				$related_product_save->save();
 				$related_product_id = $related_product_save->get_id();
-				if($related_product_id) {
+				if ( $related_product_id ) {
 					$related_product_ids[] = $related_product_id;
 				}
 			}
 		}
 
-		$related_relationship_save = new Related_Relationship_Save($related_product_ids, $saved_product_id);
+		$related_relationship_save = new Related_Relationship_Save( $related_product_ids, $saved_product_id );
 		$related_relationship_save->save();
 	}
 }

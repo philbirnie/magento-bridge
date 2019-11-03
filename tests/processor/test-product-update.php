@@ -61,6 +61,15 @@ class ProductUpdateTest extends WP_UnitTestCase {
 			]
 		);
 
+		$custom_product->create(
+			[
+				'post_type'  => 'product',
+				'meta_input' => [
+					'product_sku' => 'some_dumb_product'
+				]
+			]
+		);
+
 		$this->configurable_connector = $this->createMock( Magento_Configurable_Children::class );
 		$this->configurable_connector->method( 'send_request' )
 			->willReturn('[{"id":50,"sku":"tracer360-S","name":"Tracer 360-S","attribute_set_id":9,"price":69.95,"status":1,"visibility":1,"type_id":"simple","created_at":"2019-09-27 14:57:57","updated_at":"2019-10-02 13:51:37","weight":0.9,"product_links":[],"tier_prices":[],"custom_attributes":[{"attribute_code":"required_options","value":"0"},{"attribute_code":"special_price","value":"49.9500"},{"attribute_code":"has_options","value":"0"},{"attribute_code":"tax_class_id","value":"2"},{"attribute_code":"category_ids","value":["2","3"]},{"attribute_code":"nox_tracer_size","value":"4"},{"attribute_code":"short_description","value":"<p>The Tracer360 visibility vest keeps you safe and out of harm\'s way while you\'re active by making you highly visible to cars and traffic under any conditions.<\/p>"},{"attribute_code":"image","value":"\/s\/i\/size-chart-01-2x.jpg"},{"attribute_code":"small_image","value":"\/s\/i\/size-chart-01-2x.jpg"},{"attribute_code":"thumbnail","value":"\/s\/i\/size-chart-01-2x.jpg"},{"attribute_code":"swatch_image","value":"\/s\/i\/size-chart-01-2x.jpg"},{"attribute_code":"url_key","value":"tracer-360-s"},{"attribute_code":"msrp_display_actual_price_type","value":"0"}]},{"id":51,"sku":"tracer360-M\/L","name":"Tracer 360-M\/L","attribute_set_id":9,"price":69.95,"status":1,"visibility":1,"type_id":"simple","created_at":"2019-09-27 14:57:57","updated_at":"2019-10-02 13:51:37","weight":0.9063,"product_links":[],"tier_prices":[],"custom_attributes":[{"attribute_code":"required_options","value":"0"},{"attribute_code":"special_price","value":"49.9500"},{"attribute_code":"has_options","value":"0"},{"attribute_code":"tax_class_id","value":"2"},{"attribute_code":"category_ids","value":["2","3"]},{"attribute_code":"nox_tracer_size","value":"5"},{"attribute_code":"short_description","value":"<p>The Tracer360 is a high visibility vest that takes you where a reflective vest can\'t. With 360 degrees of full color spectrum illumination paired with 3M reflectivity, the Tracer360 perfect for runners and cyclists.<\/p>"},{"attribute_code":"image","value":"\/s\/i\/size-chart-01-2x.jpg"},{"attribute_code":"small_image","value":"\/s\/i\/size-chart-01-2x.jpg"},{"attribute_code":"thumbnail","value":"\/s\/i\/size-chart-01-2x.jpg"},{"attribute_code":"swatch_image","value":"\/s\/i\/size-chart-01-2x.jpg"},{"attribute_code":"url_key","value":"tracer-360-m-l"},{"attribute_code":"msrp_display_actual_price_type","value":"0"}]},{"id":52,"sku":"tracer360-XL","name":"Tracer 360-XL","attribute_set_id":9,"price":69.95,"status":1,"visibility":1,"type_id":"simple","created_at":"2019-09-27 14:57:57","updated_at":"2019-10-02 13:51:37","weight":0.9313,"product_links":[],"tier_prices":[],"custom_attributes":[{"attribute_code":"required_options","value":"0"},{"attribute_code":"special_price","value":"49.9500"},{"attribute_code":"has_options","value":"0"},{"attribute_code":"tax_class_id","value":"2"},{"attribute_code":"category_ids","value":["2","3"]},{"attribute_code":"nox_tracer_size","value":"6"},{"attribute_code":"short_description","value":"<p>The Tracer360 is a high visibility vest.<\/p>"},{"attribute_code":"image","value":"\/s\/i\/size-chart-01-2x.jpg"},{"attribute_code":"small_image","value":"\/s\/i\/size-chart-01-2x.jpg"},{"attribute_code":"thumbnail","value":"\/s\/i\/size-chart-01-2x.jpg"},{"attribute_code":"swatch_image","value":"\/s\/i\/size-chart-01-2x.jpg"},{"attribute_code":"url_key","value":"tracer-360-xl"},{"attribute_code":"msrp_display_actual_price_type","value":"0"}]}]' );
@@ -111,6 +120,20 @@ class ProductUpdateTest extends WP_UnitTestCase {
 		$product_skus = Product_Update::get_expired_products();
 
 		$this->assertEquals( [ '39g' ], $product_skus );
+	}
+
+	public function testShouldClearCache(  ) {
+		global $wpdb;
+
+		$product_skus = Product_Update::get_expired_products();
+		$this->assertCount(1, $product_skus);
+
+		//Run Cache Flush
+		Product_Update::clear_cache();
+		$expired_cache = Product_Update::get_expired_products();
+
+		$this->assertCount(3, $expired_cache, 'Number of Expired products is equal to number of products');
+
 	}
 
 	public function testUpdateProductChangesAttributesOfProduct() {
@@ -337,32 +360,6 @@ class ProductUpdateTest extends WP_UnitTestCase {
 		$wpdb->insert(
 			\Magento_Bridge::get_table_name( 'products' ),
 			[
-				'sku'           => 'tracer360-S',
-				'mage_id'       => 5,
-				'name'          => 'Tracer 360 S',
-				'price'         => 65,
-				'special_price' => 0,
-				'type'          => 'simple',
-				'cache_time'    => time(),
-			]
-		);
-
-		$wpdb->insert(
-			\Magento_Bridge::get_table_name( 'products' ),
-			[
-				'sku'           => 'tracer360-M',
-				'mage_id'       => 6,
-				'name'          => 'Tracer 360 M',
-				'price'         => 68,
-				'special_price' => 0,
-				'type'          => 'simple',
-				'cache_time'    => time(),
-			]
-		);
-
-		$wpdb->insert(
-			\Magento_Bridge::get_table_name( 'products' ),
-			[
 				'sku'           => '39g',
 				'mage_id'       => 7,
 				'name'          => '39 g',
@@ -372,6 +369,20 @@ class ProductUpdateTest extends WP_UnitTestCase {
 				'cache_time'    => time() - Product_Adapter_Wordpress::CACHE_AGE - 1,
 			]
 		);
+
+		$wpdb->insert(
+			\Magento_Bridge::get_table_name( 'products' ),
+			[
+				'sku'           => 'some_dumb_product',
+				'mage_id'       => 999,
+				'name'          => 'Some Dumb Product',
+				'price'         => 52.56,
+				'special_price' => 0,
+				'type'          => 'simple',
+				'cache_time'    => time(),
+			]
+		);
+
 
 		/** Set up Configurable Label */
 		$wpdb->insert(
