@@ -122,7 +122,7 @@ class Product_Save {
 		return $this->result->id ?? 0;
 	}
 
-	public function get_sku(  ) {
+	public function get_sku() {
 		return $this->result->sku ?? '';
 	}
 
@@ -136,10 +136,11 @@ class Product_Save {
 			'sku'               => $this->result->sku,
 			'mage_id'           => $this->result->id,
 			'name'              => $this->result->name,
-			'price'             => $this->get_price($this->result),
+			'price'             => $this->get_price( $this->result ),
 			'special_price'     => $this->get_special_price_from_attributes( $this->result ),
 			'type'              => $this->result->type_id,
 			'main_photo_url'    => $this->get_main_image_from_attributes( $this->result ),
+			'amazon_url'        => $this->get_amazon_url_from_attributes( $this->result ),
 			'additional_photos' => json_encode( $this->get_additional_photos_from_attributes( $this->result ) ),
 			'cache_time'        => time(),
 			'description'       => $this->get_description_from_attributes( $this->result ),
@@ -154,7 +155,7 @@ class Product_Save {
 	 */
 	protected function get_format(): array {
 		return [
-			'%s', '%d', '%s', '%f', '%f', '%s', '%s', '%s', '%d'
+			'%s', '%d', '%s', '%f', '%f', '%s', '%s', '%s', '%s', '%d', '%s', '%s'
 		];
 	}
 

@@ -36,13 +36,16 @@ class Product {
 	/** @var string */
 	public $main_photo_url = '';
 
+	/** @var string */
+	public $amazon_url = '';
+
 	/** @var array */
 	public $additional_photos = [];
 
 	/** @var array of Products */
 	public $children = [];
 
-	/** @var array  */
+	/** @var array */
 	public $configurable_attributes = [];
 
 	/** @var array */
