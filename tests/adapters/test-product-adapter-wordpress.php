@@ -149,7 +149,7 @@ class ProductAdapterWordpressTest extends WP_UnitTestCase {
 	public function testShouldReturnCorrectUrl() {
 		$tracer = $this->configurable_adapter->get_product();
 		$this->assertNotEmpty( $tracer->url );
-		$this->assertEquals( 'https://192.168.33.16:8001/tracer360.html', $tracer->url );
+		$this->assertEquals( 'https://192.168.33.16:8001/tracer360', $tracer->url );
 	}
 
 	public function testShouldReturnDescription() {
