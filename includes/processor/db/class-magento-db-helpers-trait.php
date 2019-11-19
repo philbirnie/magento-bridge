@@ -49,21 +49,17 @@ trait Magento_Db_Helpers_Trait {
 	 */
 	public function get_special_price_from_attributes( $result ) {
 
-		if ( 'configurable' != $result->type_id ) {
-			$special_price = array_filter( $result->custom_attributes ?? [], function ( $attribute ) {
-				return isset( $attribute->attribute_code ) && 'special_price' === $attribute->attribute_code;
-			} );
+		$special_price = array_filter( $result->custom_attributes ?? [], function ( $attribute ) {
+			return isset( $attribute->attribute_code ) && 'nox_sales_price' === $attribute->attribute_code;
+		} );
 
-			if ( ! $special_price ) {
-				return 0.00;
-			}
-
-			$special_price = array_values( $special_price );
-
-			return $special_price[0]->value ?? 0.00;
-		} else {
-			return $result->extension_attributes->configurable_special ?? 0.00;
+		if ( ! $special_price ) {
+			return 0.00;
 		}
+
+		$special_price = array_values( $special_price );
+
+		return $special_price[0]->value ?? 0.00;
 	}
 
 
@@ -142,7 +138,6 @@ trait Magento_Db_Helpers_Trait {
 		}
 		return $custom_attributes['amazon_url_attributes'] ?? '';
 	}
-
 
 
 }
