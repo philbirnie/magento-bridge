@@ -129,7 +129,7 @@ class Product_Adapter_Wordpress extends Product_Adapter_Abstract implements Prod
 			$base_url = '';
 		}
 
-		return sprintf( '%s/%s.html', $base_url, $url );
+		return sprintf( '%s/%s', $base_url, $url );
 	}
 
 	protected function add_configurable_attributes( Product $current_product ): Product {
