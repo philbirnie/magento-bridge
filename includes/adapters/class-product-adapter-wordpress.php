@@ -104,6 +104,7 @@ class Product_Adapter_Wordpress extends Product_Adapter_Abstract implements Prod
 		$product->main_photo_url    = $result->main_photo_url ?? '';
 		$product->additional_photos = isset( $result->additional_photos ) && strlen( $result->additional_photos ) > 0 ? json_decode( $result->additional_photos ) : [];
 		$product->amazon_url		= $result->amazon_url ?? '';
+		$product->amazon_price		= $result->amazon_price ?? 0;
 		$product->type              = $result->type ?? 'simple';
 		$product->description       = $result->description ?? '';
 		$product->url               = $this->get_product_url( $result->url ?? '' );

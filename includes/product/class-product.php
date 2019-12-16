@@ -39,6 +39,9 @@ class Product {
 	/** @var string */
 	public $amazon_url = '';
 
+	/** @var float */
+	public $amazon_price = 0.00;
+
 	/** @var array */
 	public $additional_photos = [];
 

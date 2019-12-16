@@ -141,6 +141,7 @@ class Product_Save {
 			'type'              => $this->result->type_id,
 			'main_photo_url'    => $this->get_main_image_from_attributes( $this->result ),
 			'amazon_url'        => $this->get_amazon_url_from_attributes( $this->result ),
+			'amazon_price'      => $this->get_amazon_price_from_attributes( $this->result ),
 			'additional_photos' => json_encode( $this->get_additional_photos_from_attributes( $this->result ) ),
 			'cache_time'        => time(),
 			'description'       => $this->get_description_from_attributes( $this->result ),
@@ -155,7 +156,7 @@ class Product_Save {
 	 */
 	protected function get_format(): array {
 		return [
-			'%s', '%d', '%s', '%f', '%f', '%s', '%s', '%s', '%s', '%d', '%s', '%s'
+			'%s', '%d', '%s', '%f', '%f', '%s', '%s', '%s', '%f', '%s', '%d', '%s', '%s'
 		];
 	}
 

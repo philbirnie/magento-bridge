@@ -127,17 +127,38 @@ trait Magento_Db_Helpers_Trait {
 		return $custom_attributes['url_key'] ?? '';
 	}
 
+	/**
+	 * Gets Amazon URL
+	 *
+	 * @param $result
+	 *
+	 * @return string
+	 */
 	protected function get_amazon_url_from_attributes( $result ): string {
 
-		$amazon_url_attributes = 'nox_amazon_url';
+		$amazon_url_attribute = 'nox_amazon_url';
 
 		$custom_attributes = $this->get_custom_attributes( $result );
 
-		if ( isset( $custom_attributes[ $amazon_url_attributes ] ) ) {
-			return $custom_attributes[ $amazon_url_attributes ];
-		}
-		return $custom_attributes['amazon_url_attributes'] ?? '';
+		return $custom_attributes[$amazon_url_attribute] ?? '';
 	}
 
+	/**
+	 * Gets Amazon Price
+	 *
+	 * @param $result
+	 *
+	 * @return float
+	 */
+	protected function get_amazon_price_from_attributes( $result ): float {
 
+		$amazon_price_attributes = 'nox_amazon_price';
+
+		$custom_attributes = $this->get_custom_attributes( $result );
+
+		if ( isset( $custom_attributes[ $amazon_price_attributes ] ) ) {
+			return (float) $custom_attributes[ $amazon_price_attributes ];
+		}
+		return 0.00;
+	}
 }

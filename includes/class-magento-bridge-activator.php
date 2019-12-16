@@ -65,6 +65,7 @@ class Magento_Bridge_Activator {
   description text,
   main_photo_url text,
   amazon_url varchar(255),
+  amazon_price FLOAT,
   additional_photos text,
   cache_time int(10) UNSIGNED,
   PRIMARY KEY  (id),

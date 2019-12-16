@@ -152,6 +152,19 @@ class ProductAdapterWordpressTest extends WP_UnitTestCase {
 		$this->assertEquals( 'https://192.168.33.16:8001/tracer360.html', $tracer->url );
 	}
 
+
+	public function testShouldReturnCorrectAmazonPrice() {
+		$tracer = $this->configurable_adapter->get_product();
+		$this->assertNotEmpty( $tracer->amazon_price );
+		$this->assertEquals( 59.95, $tracer->amazon_price );
+	}
+
+	public function testShouldReturnCorrectAmazonUrl() {
+		$tracer = $this->configurable_adapter->get_product();
+		$this->assertNotEmpty( $tracer->amazon_url );
+		$this->assertEquals( 'https://amazonurl.com', $tracer->amazon_url );
+	}
+
 	public function testShouldReturnDescription() {
 		$tracer = $this->configurable_adapter->get_product();
 		$this->assertNotEmpty( $tracer->description );
@@ -182,6 +195,8 @@ class ProductAdapterWordpressTest extends WP_UnitTestCase {
 				'name'          => 'Tracer 360',
 				'price'         => 0,
 				'special_price' => 0,
+				'amazon_price'  => 59.95,
+				'amazon_url'    => 'https://amazonurl.com',
 				'type'          => 'configurable',
 				'description'   => 'Some Short Description',
 				'url'           => 'tracer360',
