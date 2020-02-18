@@ -63,6 +63,7 @@ abstract class Connector_Magento_API_Abstract implements Connector_Interface {
 
 		$request = self::get_url() . self::REQUEST_BASE . $this->get_request();
 
+		/** @var array|\WP_Error $response */
 		$response = wp_remote_request(
 			$request,
 			[
@@ -73,6 +74,10 @@ abstract class Connector_Magento_API_Abstract implements Connector_Interface {
 				'body'    => $this->get_params(),
 			]
 		);
+
+		if ( ! is_array( $response ) && 'WP_Error' === get_class( $response ) ) {
+			throw new \Exception( sprintf( 'Magento API Request Failure. %s', $response->get_error_message() ) );
+		}
 
 		if ( 200 != $response['response']['code'] ?? 0 ) {
 			throw new \Exception( sprintf( 'Magento API Request Failure. %d, %s', $response['response']['code'] ?? 0, static::class ) );
